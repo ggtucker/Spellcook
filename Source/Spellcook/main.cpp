@@ -14,8 +14,8 @@ int main () {
     windowContext.m_title = "SPELLCOOK";
     window.Create(windowContext);
 
-    CFixed value = 4;
-    std::cout << value.Sqrt() << std::endl;
+    CFixed value = 2;
+    std::cout << "Result: " << value.Sqrt() << std::endl;
 
     CInputSystem input;
     while (window.IsOpen()) {
