@@ -7,11 +7,11 @@
 CFixed CFixed::Sqrt () const {
     Assert_(m_value >= 0);
     // Newton-Raphson Method
-    CFixed next = *this / 2;
-    CFixed result = 0;
+    CFixed next = *this / F_2;
+    CFixed result = F_0;
     while (next != result) {
         result = next;
-        next = (result + *this / result) / 2;
+        next = (result + *this / result) / F_2;
     }
     return result;
 }
@@ -36,4 +36,8 @@ std::ostream& operator<< (std::ostream& stream, const CFixed& a) {
     }
 
     return stream;
+}
+
+CFixed Sqrt (CFixed value) {
+    return value.Sqrt();
 }

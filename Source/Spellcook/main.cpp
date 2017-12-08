@@ -1,4 +1,5 @@
 #include "Encosys/EntityManager.h"
+#include "Math/Vector2.h"
 #include "Render/InputSystem.h"
 #include "Render/Window.h"
 #include <iostream>
@@ -14,8 +15,12 @@ int main () {
     windowContext.m_title = "SPELLCOOK";
     window.Create(windowContext);
 
-    CFixed value = 2;
-    std::cout << "Result: " << value.Sqrt() << std::endl;
+    CFixed a = F_4;
+    CVector2f vector(F_1, F_2);
+    vector.Normalize();
+    std::cout << "Result: " << F_2 << std::endl;
+    std::cout << "Result: " << vector.Mag() << std::endl;
+    std::cout << "Result: " << a.Squared() << std::endl;
 
     CInputSystem input;
     while (window.IsOpen()) {

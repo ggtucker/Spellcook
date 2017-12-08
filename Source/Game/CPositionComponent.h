@@ -1,6 +1,7 @@
 #pragma once
 
+#include "Math/Vector2.h"
+
 struct SPositionComponent {
-    int x;
-    int y;
+    CVector2f m_position{};
 };
