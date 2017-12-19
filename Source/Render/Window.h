@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Core/CoreTypes.h"
+#include "InputEvent.h"
+#include <queue>
 #include <string>
 
-namespace sf { class RenderWindow; }
-class CInputSystem;
+class CInputEvent;
+struct GLFWwindow;
 
 enum EWindowStyle {
     e_windowStyleNone = 0,
@@ -24,18 +26,27 @@ struct SWindowContext {
 
 class CWindow {
 public:
-    CWindow ();
+    CWindow () = default;
+    explicit CWindow (const SWindowContext& context);
     ~CWindow ();
 
     void Create (const SWindowContext& context);
 
     bool IsOpen () const;
     void Close ();
-    void ProcessInput (CInputSystem& input);
+    void SetActive (bool active);
+
+    bool PollInput (CInputEvent& inputEvent);
+    void PushInput (const CInputEvent& inputEvent);
 
     void Clear ();
     void Display ();
 
+    bool IsKeyRepeatEnabled () const { return m_keyRepeatEnabled; }
+    void SetKeyRepeatEnabled (bool enabled) { m_keyRepeatEnabled = enabled; }
+
 private:
-    sf::RenderWindow* m_window{nullptr};
+    GLFWwindow* m_window{nullptr};
+    std::queue<CInputEvent> m_inputQueue{};
+    bool m_keyRepeatEnabled{};
 };

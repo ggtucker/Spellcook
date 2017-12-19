@@ -47,10 +47,6 @@ public:
 };
 
 template <typename T>
-void Normalize (const CVector2<T>& a) {
-    CVector2<T> b = a;
-    b.Normalize();
-    return b;
-}
+CVector2<T> Normalize (const CVector2<T>& a) { CVector2<T> b = a; b.Normalize(); return b; }
 
 using CVector2f = CVector2<CFixed>;
