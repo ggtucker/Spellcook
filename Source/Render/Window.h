@@ -5,7 +5,6 @@
 #include <queue>
 #include <string>
 
-class CInputEvent;
 struct GLFWwindow;
 
 enum EWindowStyle {
@@ -49,4 +48,5 @@ private:
     GLFWwindow* m_window{nullptr};
     std::queue<CInputEvent> m_inputQueue{};
     bool m_keyRepeatEnabled{};
+    int m_shaderProgram{};
 };

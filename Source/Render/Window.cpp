@@ -4,6 +4,19 @@
 #include <GLFW/glfw3.h>
 #include "Core/CoreDebug.h"
 
+static const char* c_vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+static const char* c_fragmentShaderSource = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n\0";
+
 static NKeyboard::EKey GlfwKeyCodeToKeyboardKey (int key);
 static NMouse::EButton GlfwMouseCodeToMouseButton (int button);
 
@@ -41,10 +54,54 @@ void CWindow::Create (const SWindowContext& context) {
     Assert_(m_window != nullptr);
     glfwSetWindowUserPointer(m_window, this);
     glfwMakeContextCurrent(m_window);
+
     int gladInitSuccess = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     Assert_(gladInitSuccess);
     glViewport(0, 0, context.m_width, context.m_height);
     glfwSetFramebufferSizeCallback(m_window, GlfwFramebufferSizeCallback);
+
+    glfwSetKeyCallback(m_window, GlfwKeyCallback);
+    glfwSetMouseButtonCallback(m_window, GlfwMouseButtonCallback);
+    glfwSetCursorPosCallback(m_window, GlfwMouseMoveCallback);
+    glfwSetCursorEnterCallback(m_window, GlfwMouseEnterCallback);
+    glfwSetScrollCallback(m_window, GlfwMouseScrollCallback);
+    glfwSetWindowSizeCallback(m_window, GlfwResizeCallback);
+    glfwSetWindowCloseCallback(m_window, GlfwCloseCallback);
+
+    int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &c_vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    // check for shader compile errors
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    }
+    Assert_(success);
+    // fragment shader
+    int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &c_fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+    }
+    Assert_(success);
+    // link shaders
+    m_shaderProgram = glCreateProgram();
+    glAttachShader(m_shaderProgram, vertexShader);
+    glAttachShader(m_shaderProgram, fragmentShader);
+    glLinkProgram(m_shaderProgram);
+    // check for linking errors
+    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(m_shaderProgram, 512, NULL, infoLog);
+    }
+    Assert_(success);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }
 
 bool CWindow::IsOpen () const {
@@ -75,6 +132,7 @@ void CWindow::PushInput (const CInputEvent& inputEvent) {
 void CWindow::Clear () {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    glUseProgram(m_shaderProgram);
 }
 
 void CWindow::Display () {
@@ -97,11 +155,11 @@ static void GlfwKeyCallback (GLFWwindow* glfwWindow, int key, int scanCode, int 
     event.m_key.m_control = mode & GLFW_MOD_CONTROL;
     event.m_key.m_alt = mode & GLFW_MOD_ALT;
     event.m_key.m_system = mode & GLFW_MOD_SUPER;
-    if (action == GLFW_PRESS) {
-        event.m_type = CInputEvent::EEventType::KeyPressed;
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        event.m_type = EInputEvent::KeyPressed;
     }
     else if (action == GLFW_RELEASE) {
-        event.m_type = CInputEvent::EEventType::KeyReleased;
+        event.m_type = EInputEvent::KeyReleased;
     }
     window->PushInput(event);
 }
@@ -115,10 +173,10 @@ static void GlfwMouseButtonCallback (GLFWwindow* glfwWindow, int button, int act
     event.m_mouseButton.m_x = static_cast<int32_t>(x);
     event.m_mouseButton.m_y = static_cast<int32_t>(y);
     if (action == GLFW_PRESS) {
-        event.m_type = CInputEvent::EEventType::MousePressed;
+        event.m_type = EInputEvent::MousePressed;
     }
     else if (action == GLFW_RELEASE) {
-        event.m_type = CInputEvent::EEventType::MouseReleased;
+        event.m_type = EInputEvent::MouseReleased;
     }
     window->PushInput(event);
 }
@@ -128,7 +186,7 @@ static void GlfwMouseMoveCallback (GLFWwindow* glfwWindow, double xpos, double y
     CInputEvent event;
     event.m_mouseMove.m_x = static_cast<int32_t>(xpos);
     event.m_mouseMove.m_y = static_cast<int32_t>(ypos);
-    event.m_type = CInputEvent::EEventType::MouseMoved;
+    event.m_type = EInputEvent::MouseMoved;
     window->PushInput(event);
 }
 
@@ -136,10 +194,10 @@ static void GlfwMouseEnterCallback (GLFWwindow* glfwWindow, int entered) {
     CWindow* window = static_cast<CWindow*>(glfwGetWindowUserPointer(glfwWindow));
     CInputEvent event;
     if (entered) {
-        event.m_type = CInputEvent::EEventType::MouseEntered;
+        event.m_type = EInputEvent::MouseEntered;
     }
     else {
-        event.m_type = CInputEvent::EEventType::MouseLeft;
+        event.m_type = EInputEvent::MouseLeft;
     }
     window->PushInput(event);
 }
@@ -149,7 +207,7 @@ static void GlfwMouseScrollCallback (GLFWwindow* glfwWindow, double xoffset, dou
     CInputEvent event;
     event.m_mouseScroll.m_x = static_cast<int32_t>(xoffset);
     event.m_mouseScroll.m_y = static_cast<int32_t>(yoffset);
-    event.m_type = CInputEvent::EEventType::MouseScrolled;
+    event.m_type = EInputEvent::MouseScrolled;
     window->PushInput(event);
 }
 
@@ -158,15 +216,16 @@ static void GlfwResizeCallback (GLFWwindow* glfwWindow, int width, int height) {
     CInputEvent event;
     event.m_resize.m_width = width;
     event.m_resize.m_height = height;
-    event.m_type = CInputEvent::EEventType::Resized;
+    event.m_type = EInputEvent::Resized;
     window->PushInput(event);
 }
 
 static void GlfwCloseCallback (GLFWwindow* glfwWindow) {
     if (glfwWindowShouldClose(glfwWindow)) {
+        glfwSetWindowShouldClose(glfwWindow, false);
         CWindow* window = static_cast<CWindow*>(glfwGetWindowUserPointer(glfwWindow));
         CInputEvent event;
-        event.m_type = CInputEvent::EEventType::Closed;
+        event.m_type = EInputEvent::Closed;
         window->PushInput(event);
     }
 }

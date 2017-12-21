@@ -50,7 +50,7 @@ project "Spellcook"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core", "Encosys", "Game" }
+    links { "Core", "Encosys", "Game", "GameUI" }
     files { "Source/Spellcook/**.h", "Source/Spellcook/**.cpp" }
     UseRenderLib()
 
@@ -62,6 +62,15 @@ project "Game"
     includedirs { "Source" }
     links { "Core" }
     files { "Source/Game/**.h", "Source/Game/**.cpp" }
+
+project "GameUI"
+    kind "StaticLib"
+    language "C++"
+    location "build/"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs { "Source" }
+    links { "Core", "Game", "Render" }
+    files { "Source/GameUI/**.h", "Source/GameUI/**.cpp" }
 
 project "Render"
     kind "StaticLib"

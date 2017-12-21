@@ -4,6 +4,20 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 
+enum class EInputEvent {
+    Closed,
+    Resized,
+    KeyPressed,
+    KeyReleased,
+    MouseScrolled,
+    MousePressed,
+    MouseReleased,
+    MouseMoved,
+    MouseEntered,
+    MouseLeft,
+    Count
+};
+
 class CInputEvent {
 public:
     struct SResizeEvent {
@@ -35,21 +49,7 @@ public:
         int32_t m_y;
     };
 
-    enum class EEventType {
-        Closed,
-        Resized,
-        KeyPressed,
-        KeyReleased,
-        MouseScrolled,
-        MousePressed,
-        MouseReleased,
-        MouseMoved,
-        MouseEntered,
-        MouseLeft,
-        Count
-    };
-
-    EEventType m_type{};
+    EInputEvent m_type{};
 
     union {
         SResizeEvent m_resize;
