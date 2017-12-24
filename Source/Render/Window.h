@@ -2,6 +2,7 @@
 
 #include "Core/CoreTypes.h"
 #include "InputEvent.h"
+#include "Shader.h"
 #include <queue>
 #include <string>
 
@@ -26,10 +27,9 @@ struct SWindowContext {
 class CWindow {
 public:
     CWindow () = default;
-    explicit CWindow (const SWindowContext& context);
     ~CWindow ();
 
-    void Create (const SWindowContext& context);
+    bool Create (const SWindowContext& context);
 
     bool IsOpen () const;
     void Close ();
@@ -48,5 +48,5 @@ private:
     GLFWwindow* m_window{nullptr};
     std::queue<CInputEvent> m_inputQueue{};
     bool m_keyRepeatEnabled{};
-    int m_shaderProgram{};
+    CShader m_shader{};
 };

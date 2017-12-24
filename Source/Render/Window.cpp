@@ -4,18 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "Core/CoreDebug.h"
 
-static const char* c_vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-static const char* c_fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
+DefineLogStatic_(Window, ELogCategory::Render, "Window.txt", 0);
 
 static NKeyboard::EKey GlfwKeyCodeToKeyboardKey (int key);
 static NMouse::EButton GlfwMouseCodeToMouseButton (int button);
@@ -29,18 +18,16 @@ static void GlfwMouseScrollCallback (GLFWwindow* window, double xoffset, double 
 static void GlfwResizeCallback (GLFWwindow* window, int width, int height);
 static void GlfwCloseCallback (GLFWwindow* window);
 
-CWindow::CWindow (const SWindowContext& context) {
-    Create(context);
-}
-
 CWindow::~CWindow () {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
-void CWindow::Create (const SWindowContext& context) {
-    int glfwInitSuccess = glfwInit();
-    Assert_(glfwInitSuccess);
+bool CWindow::Create (const SWindowContext& context) {
+    if (!glfwInit()) {
+        LogFatal_(Window, "Failed to initialize glfw");
+        return false;
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -51,12 +38,19 @@ void CWindow::Create (const SWindowContext& context) {
         nullptr,
         nullptr
     );
-    Assert_(m_window != nullptr);
+    if (m_window == nullptr) {
+        LogFatal_(Window, "Failed to create GLFW window");
+        glfwTerminate();
+        return false;
+    }
     glfwSetWindowUserPointer(m_window, this);
     glfwMakeContextCurrent(m_window);
 
-    int gladInitSuccess = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    Assert_(gladInitSuccess);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        LogFatal_(Window, "Failed to initialize GLAD");
+        glfwTerminate();
+        return false;
+    }
     glViewport(0, 0, context.m_width, context.m_height);
     glfwSetFramebufferSizeCallback(m_window, GlfwFramebufferSizeCallback);
 
@@ -68,40 +62,11 @@ void CWindow::Create (const SWindowContext& context) {
     glfwSetWindowSizeCallback(m_window, GlfwResizeCallback);
     glfwSetWindowCloseCallback(m_window, GlfwCloseCallback);
 
-    int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &c_vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // check for shader compile errors
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    if (!m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs")) {
+        return false;
     }
-    Assert_(success);
-    // fragment shader
-    int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &c_fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // check for shader compile errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    }
-    Assert_(success);
-    // link shaders
-    m_shaderProgram = glCreateProgram();
-    glAttachShader(m_shaderProgram, vertexShader);
-    glAttachShader(m_shaderProgram, fragmentShader);
-    glLinkProgram(m_shaderProgram);
-    // check for linking errors
-    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(m_shaderProgram, 512, NULL, infoLog);
-    }
-    Assert_(success);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+
+    return true;
 }
 
 bool CWindow::IsOpen () const {
@@ -132,7 +97,7 @@ void CWindow::PushInput (const CInputEvent& inputEvent) {
 void CWindow::Clear () {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glUseProgram(m_shaderProgram);
+    m_shader.Use();
 }
 
 void CWindow::Display () {
