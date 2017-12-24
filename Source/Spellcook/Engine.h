@@ -11,14 +11,19 @@ class CWindow;
 
 class CEngine {
 public:
-    void Initialize (CWindow& window);
-    void Terminate ();
+    explicit CEngine (CWindow& window) : m_window{window} {}
 
-    void ProcessInput (CWindow& window, const CInputEvent& event);
-
-    void Update (CFixed delta);
+    void RunMainLoop ();
 
 private:
+    void Initialize();
+    void Terminate();
+
+    void ProcessInput(const CInputEvent& event);
+    void Update(CFixed delta);
+
+private:
+    CWindow& m_window;
     ecs::Encosys m_encosys;
     std::vector<CInputHandler*> m_inputHandlers{};
 };

@@ -4,10 +4,36 @@
 #include "Game/SystemMovement.h"
 #include "GameUI/SystemRender.h"
 
-void CEngine::Initialize (CWindow& window) {
+void CEngine::RunMainLoop () {
+    Initialize();
+
+    const CFixed c_fixedTimestep = F_0_03125;
+    const CTime c_timestep = CTime::Seconds(c_fixedTimestep.ToFloat());
+    CTime accumulatedTime;
+    CTimer engineTimer;
+
+    while (m_window.IsOpen()) {
+        CInputEvent event;
+        while (m_window.PollInput(event)) {
+            ProcessInput(event);
+        }
+
+        CTime frameTime = engineTimer.Restart();
+        accumulatedTime += frameTime;
+
+        while (accumulatedTime >= c_timestep) {
+            Update(c_fixedTimestep);
+            accumulatedTime -= c_timestep;
+        }
+    }
+
+    Terminate();
+}
+
+void CEngine::Initialize () {
     // Register systems
     m_encosys.RegisterSystem<CSystemMovement>();
-    m_encosys.RegisterSystem<CSystemRender>(window);
+    m_encosys.RegisterSystem<CSystemRender>(m_window);
 
     // Manually create the player entity
     ecs::Entity player = m_encosys.Get(m_encosys.Create());
@@ -23,13 +49,13 @@ void CEngine::Terminate () {
 
 }
 
-void CEngine::ProcessInput (CWindow& window, const CInputEvent& event) {
+void CEngine::ProcessInput (const CInputEvent& event) {
     if (event.m_type == EInputEvent::Closed) {
-        window.Close();
+        m_window.Close();
     }
     else {
         for (CInputHandler* inputHandler : m_inputHandlers) {
-            if (inputHandler->ProcessInput(window, event)) {
+            if (inputHandler->ProcessInput(m_window, event)) {
                 return;
             }
         }

@@ -14,28 +14,8 @@ int main () {
         return -1;
     }
 
-    CTimer engineTimer;
-    CTime accumulatedTime;
-    const CFixed c_fixedTimestep = F_0_03125;
-    const CTime c_timestep = CTime::Seconds(c_fixedTimestep.ToFloat());
-
-    CEngine engine;
-    engine.Initialize(window);
-    while (window.IsOpen()) {
-        CInputEvent event;
-        while (window.PollInput(event)) {
-            engine.ProcessInput(window, event);
-        }
-
-        CTime frameTime = engineTimer.Restart();
-        accumulatedTime += frameTime;
-
-        while (accumulatedTime >= c_timestep) {
-            engine.Update(c_fixedTimestep);
-            accumulatedTime -= c_timestep;
-        }
-    }
-    engine.Terminate();
+    CEngine engine(window);
+    engine.RunMainLoop();
 
     return 0;
 }
