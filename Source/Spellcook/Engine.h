@@ -5,24 +5,20 @@
 #include "Math/Vector2.h"
 #include "Render/Shader.h"
 #include "Render/Timer.h"
+#include "Encosys/Encosys.h"
 
 class CWindow;
 
 class CEngine {
 public:
-
-    void Initialize ();
+    void Initialize (CWindow& window);
     void Terminate ();
 
     void ProcessInput (CWindow& window, const CInputEvent& event);
 
-    void Update ();
-
-    void Render (CWindow& window);
+    void Update (CFixed delta);
 
 private:
-    CTimer m_colorTimer{};
-    CVector2f m_pos{};
+    ecs::Encosys m_encosys;
     std::vector<CInputHandler*> m_inputHandlers{};
-    CShader m_shader{};
 };

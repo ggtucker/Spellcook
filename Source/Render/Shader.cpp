@@ -78,7 +78,7 @@ bool CShader::Create (const std::string& vertexFileName, const std::string& frag
     return true;
 }
 
-void CShader::Use () {
+void CShader::Use () const {
     glUseProgram(m_program);
 }
 

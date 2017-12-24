@@ -38,7 +38,7 @@ public:
     void PushInput (const CInputEvent& inputEvent);
 
     void Clear ();
-    void Display ();
+    void SwapBuffers ();
 
     bool IsKeyRepeatEnabled () const { return m_keyRepeatEnabled; }
     void SetKeyRepeatEnabled (bool enabled) { m_keyRepeatEnabled = enabled; }

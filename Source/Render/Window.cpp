@@ -95,7 +95,7 @@ void CWindow::Clear () {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void CWindow::Display () {
+void CWindow::SwapBuffers () {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }

@@ -10,7 +10,7 @@ public:
 
     bool Create (const std::string& vertexFileName, const std::string& fragmentFileName);
 
-    void Use ();
+    void Use () const;
 
     void SetBool (const std::string& name, bool value) const;
     void SetInt32 (const std::string& name, int32_t value) const;

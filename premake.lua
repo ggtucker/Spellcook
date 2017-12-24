@@ -22,6 +22,7 @@ workspace "Spellcook"
     platforms { "Win32", "Win64" }
     location "build"
     startproject "Spellcook"
+    includedirs { "Config" }
 
     filter "configurations:Debug"
         symbols "On"
@@ -60,7 +61,7 @@ project "Game"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core" }
+	dependson { "Core", "Math" }
     files { "Source/Game/**.h", "Source/Game/**.cpp" }
 
 project "GameUI"
@@ -69,7 +70,7 @@ project "GameUI"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core", "Game", "Render" }
+	dependson { "Core", "Math", "Game", "Render" }
     files { "Source/GameUI/**.h", "Source/GameUI/**.cpp" }
 
 project "Render"
@@ -78,7 +79,7 @@ project "Render"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source", "Libraries/glad/Include" }
-    links { "Core" }
+	dependson { "Core" }
     files { "Source/Render/**.h", "Source/Render/**.cpp", "Libraries/glad/Source/glad.c" }
     IncludeGlfw()
 
@@ -88,7 +89,7 @@ project "Math"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core" }
+	dependson { "Core" }
     files { "Source/Math/**.h", "Source/Math/**.cpp" }
 
 project "Core"
@@ -97,6 +98,7 @@ project "Core"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
+	dependson {  }
     files { "Source/Core/**.h", "Source/Core/**.cpp" }
 
 project "Encosys"
@@ -104,4 +106,6 @@ project "Encosys"
     language "C++"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
+    includedirs { "Source" }
+	dependson {  }
     files { "Source/Encosys/**.h", "Source/Encosys/**.cpp" }

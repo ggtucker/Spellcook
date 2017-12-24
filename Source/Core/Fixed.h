@@ -2,6 +2,7 @@
 
 #include <iosfwd>
 
+#define F_0_03125 CFixed::FromBits(0x00000080)
 #define F_0 CFixed::FromBits(0x00000000)
 #define F_1 CFixed::FromBits(0x00001000)
 #define F_2 CFixed::FromBits(0x00002000)

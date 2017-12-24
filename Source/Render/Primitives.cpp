@@ -1,5 +1,6 @@
 #include "Primitives.h"
 #include <glad/glad.h>
+#include <iostream>
 
 void NPrimitives::DrawTriangle (const CVector3f& position) {
     float vertices[] = {

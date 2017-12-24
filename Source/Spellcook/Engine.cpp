@@ -1,10 +1,22 @@
 #include "Engine.h"
 
-#include "Render/Primitives.h"
 #include "Render/Window.h"
+#include "Game/SystemMovement.h"
+#include "GameUI/SystemRender.h"
 
-void CEngine::Initialize () {
-    m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
+void CEngine::Initialize (CWindow& window) {
+    // Register systems
+    m_encosys.RegisterSystem<CSystemMovement>();
+    m_encosys.RegisterSystem<CSystemRender>(window);
+
+    // Manually create the player entity
+    ecs::Entity player = m_encosys.Get(m_encosys.Create());
+    SComponentPosition& position = player.AddComponent<SComponentPosition>();
+    position.m_position = CVector3f(F_4, F_3, F_2);
+    SComponentVelocity& velocity = player.AddComponent<SComponentVelocity>();
+    velocity.m_velocity = CVector3f(F_1, F_1, F_1);
+    SComponentRender& render = player.AddComponent<SComponentRender>();
+    render.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
 }
 
 void CEngine::Terminate () {
@@ -24,17 +36,6 @@ void CEngine::ProcessInput (CWindow& window, const CInputEvent& event) {
     }
 }
 
-void CEngine::Update () {
-
-}
-
-void CEngine::Render (CWindow& window) {
-    window.Clear();
-
-    m_shader.Use();
-    float greenValue = sin(m_colorTimer.TimeElapsed().Seconds()) / 2.f + 0.5f;
-    m_shader.SetVec4f("TriangleColor", CVector4f(F_0, CFixed::FromFloat(greenValue), F_0, F_1));
-    NPrimitives::DrawTriangle(CVector3f());
-
-    window.Display();
+void CEngine::Update (CFixed delta) {
+    m_encosys.Update(delta);
 }

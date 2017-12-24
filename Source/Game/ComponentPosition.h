@@ -2,6 +2,6 @@
 
 #include "Math/Vector3.h"
 
-struct SPositionComponent {
+struct SComponentPosition {
     CVector3f m_position{};
 };
