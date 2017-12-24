@@ -93,3 +93,13 @@ void CShader::SetInt32 (const std::string& name, int32_t value) const {
 void CShader::SetFloat (const std::string& name, float value) const {
     glUniform1f(glGetUniformLocation(m_program, name.c_str()), value);
 }
+
+void CShader::SetVec4f (const std::string& name, const CVector4f& value) const {
+    glUniform4f(
+        glGetUniformLocation(m_program, name.c_str()),
+        value.x.ToFloat(),
+        value.y.ToFloat(),
+        value.z.ToFloat(),
+        value.w.ToFloat()
+    );
+}

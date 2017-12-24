@@ -62,10 +62,6 @@ bool CWindow::Create (const SWindowContext& context) {
     glfwSetWindowSizeCallback(m_window, GlfwResizeCallback);
     glfwSetWindowCloseCallback(m_window, GlfwCloseCallback);
 
-    if (!m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs")) {
-        return false;
-    }
-
     return true;
 }
 
@@ -97,7 +93,6 @@ void CWindow::PushInput (const CInputEvent& inputEvent) {
 void CWindow::Clear () {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    m_shader.Use();
 }
 
 void CWindow::Display () {

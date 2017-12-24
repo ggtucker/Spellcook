@@ -29,7 +29,7 @@ public:
 
     // Arithmetic operators
     CVector3 operator+ () const { return *this; }
-    CVector3 operator- () const { return CVector3(-x, -y. -z); }
+    CVector3 operator- () const { return CVector3(-x, -y, -z); }
     friend CVector3 operator+ (const CVector3& a, const CVector3& b) { return CVector3(a.x + b.x, a.y + b.y, a.z + b.z); }
     friend CVector3 operator- (const CVector3& a, const CVector3& b) { return CVector3(a.x - b.x, a.y - b.y, a.z - b.z); }
     friend CVector3 operator* (const CVector3& a, const T& s) { return CVector3(a.x * s, a.y * s, a.z * s); }

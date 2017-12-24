@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <iostream>
 
 int main () {
     CWindow window;
@@ -11,6 +12,7 @@ int main () {
     }
 
     CEngine engine;
+    engine.Initialize();
     while (window.IsOpen()) {
         CInputEvent event;
         while (window.PollInput(event)) {
@@ -19,6 +21,7 @@ int main () {
         engine.Update();
         engine.Render(window);
     }
+    engine.Terminate();
 
     return 0;
 }

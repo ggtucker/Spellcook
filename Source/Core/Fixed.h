@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ostream>
+#include <iosfwd>
 
 #define F_0 CFixed::FromBits(0x00000000)
 #define F_1 CFixed::FromBits(0x00001000)
@@ -11,15 +11,21 @@
 class CFixed {
 public:
     static const unsigned int c_fractionBits = 12;
+    static const unsigned int c_fractionPrecision = (1 << c_fractionBits);
     static const unsigned int c_fractionMask = 0x00000FFF;
     static const unsigned int c_integerMask = 0xFFFFF000;
 
     CFixed () = default;
     CFixed (int value) : m_value{value << c_fractionBits} {}
+    CFixed (float value) = delete;
 
     CFixed Reciprocal () const { return F_1 / *this; }
     CFixed Squared () const { return *this * *this; }
     CFixed Sqrt () const;
+
+    // Type conversion
+    float ToFloat () const { return static_cast<float>(m_value) / c_fractionPrecision; }
+    static CFixed FromFloat (float value) { CFixed f; f.m_value = static_cast<int>(value * c_fractionPrecision); return f; }
 
     // Bit conversions
     int ToBits () const { return m_value; }

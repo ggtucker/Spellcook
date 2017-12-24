@@ -2,7 +2,6 @@
 
 #include "Core/CoreTypes.h"
 #include "InputEvent.h"
-#include "Shader.h"
 #include <queue>
 #include <string>
 
@@ -48,5 +47,4 @@ private:
     GLFWwindow* m_window{nullptr};
     std::queue<CInputEvent> m_inputQueue{};
     bool m_keyRepeatEnabled{};
-    CShader m_shader{};
 };

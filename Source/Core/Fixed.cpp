@@ -1,8 +1,10 @@
 #include "Fixed.h"
+
+#include "CoreDebug.h"
 #include <algorithm>
 #include <iomanip>
+#include <ostream>
 #include <sstream>
-#include "CoreDebug.h"
 
 CFixed CFixed::Sqrt () const {
     Assert_(m_value >= 0);
