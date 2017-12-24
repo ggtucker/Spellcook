@@ -1,8 +1,11 @@
 #include "Engine.h"
 
-#include "Render/Window.h"
 #include "Game/SystemMovement.h"
+#include "GameUI/InputHandler.h"
 #include "GameUI/SystemRender.h"
+#include "Render/InputEvent.h"
+#include "Render/Timer.h"
+#include "Render/Window.h"
 
 void CEngine::RunMainLoop () {
     Initialize();
