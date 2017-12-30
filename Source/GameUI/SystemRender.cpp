@@ -7,8 +7,8 @@
 #include "Render/Window.h"
 
 void CSystemRender::Initialize (ecs::SystemType& type) {
-    RequiredComponent<SComponentPosition>(type, ecs::ComponentUsage::Read);
-    RequiredComponent<SComponentRender>(type, ecs::ComponentUsage::Read);
+    RequiredComponent<SComponentPosition>(type, ecs::Access::Read);
+    RequiredComponent<SComponentRender>(type, ecs::Access::Read);
 }
 
 void CSystemRender::Update (ecs::TimeDelta delta) {

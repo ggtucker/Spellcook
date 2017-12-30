@@ -7,42 +7,42 @@ namespace ecs {
 
 class SystemEntity {
 public:
-    SystemEntity (Encosys& encosys, const SystemType& systemType, Entity entity) :
+    SystemEntity (Encosys& encosys, const SystemType& type, Entity entity) :
         m_encosys{encosys},
-        m_systemType{systemType},
+        m_type{type},
         m_entity{entity} {
     }
 
     template <typename TComponent>
     TComponent* WriteComponent () {
-        ENCOSYS_ASSERT_(m_systemType.IsWriteAllowed(m_encosys.GetComponentTypeId<TComponent>()));
+        ENCOSYS_ASSERT_(m_type.IsComponentWriteAllowed(m_encosys.GetComponentTypeId<TComponent>()));
         return m_entity.GetComponent<TComponent>();
     }
 
     template <typename TComponent>
     const TComponent* ReadComponent () const {
-        ENCOSYS_ASSERT_(m_systemType.IsReadAllowed(m_encosys.GetComponentTypeId<TComponent>()));
+        ENCOSYS_ASSERT_(m_type.IsComponentReadAllowed(m_encosys.GetComponentTypeId<TComponent>()));
         return m_entity.GetComponent<TComponent>();
     }
 
 private:
     Encosys& m_encosys;
-    const SystemType& m_systemType;
+    const SystemType& m_type;
     Entity m_entity;
 };
 
 class SystemIterType {
 public:
-    SystemIterType (Encosys& encosys, const SystemType& systemType, uint32_t index) :
+    SystemIterType (Encosys& encosys, const SystemType& type, uint32_t index) :
         m_encosys{encosys},
-        m_systemType{systemType},
+        m_type{type},
         m_index{index} {
         Next();
     }
 
     bool operator== (SystemIterType rhs) { return m_index == rhs.m_index; }
     bool operator!= (SystemIterType rhs) { return m_index != rhs.m_index; }
-    SystemEntity operator* () { return SystemEntity(m_encosys, m_systemType, m_encosys[m_index]); }
+    SystemEntity operator* () { return SystemEntity(m_encosys, m_type, m_encosys[m_index]); }
     void operator++ () { ++m_index; Next(); }
 
 private:
@@ -50,7 +50,7 @@ private:
     void Next () {
         while (m_index < m_encosys.ActiveEntityCount()) {
             Entity entity = m_encosys[m_index];
-            if (entity.HasComponentBitset(m_systemType.GetRequiredBitset())) {
+            if (entity.HasComponentBitset(m_type.GetRequiredBitset())) {
                 break;
             }
             ++m_index;
@@ -58,20 +58,20 @@ private:
     }
 
     Encosys& m_encosys;
-    const SystemType& m_systemType;
+    const SystemType& m_type;
     uint32_t m_index;
 };
 
 class SystemIter {
 public:
-    explicit SystemIter (Encosys& encosys, SystemTypeId systemId) : m_encosys{encosys}, m_systemType{encosys.GetSystemType(systemId)} {}
+    explicit SystemIter (Encosys& encosys, const SystemType& type) : m_encosys{encosys}, m_type{type} {}
 
-    SystemIterType begin () { return SystemIterType(m_encosys, m_systemType, 0); }
-    SystemIterType end () { return SystemIterType(m_encosys, m_systemType, m_encosys.ActiveEntityCount()); }
+    SystemIterType begin () { return SystemIterType(m_encosys, m_type, 0); }
+    SystemIterType end () { return SystemIterType(m_encosys, m_type, m_encosys.ActiveEntityCount()); }
 
 private:
     Encosys& m_encosys;
-    const SystemType& m_systemType;
+    const SystemType& m_type;
 };
 
 }

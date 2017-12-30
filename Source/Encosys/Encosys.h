@@ -4,6 +4,7 @@
 #include "EncosysConfig.h"
 #include "EntityId.h"
 #include "FunctionTraits.h"
+#include "SingletonRegistry.h"
 #include "SystemRegistry.h"
 #include <array>
 #include <unordered_map>
@@ -72,8 +73,9 @@ public:
 
     // Singleton members
     template <typename TSingleton> SingletonTypeId                RegisterSingleton    ();
-    template <typename TSingleton> TSingleton*                    GetSingleton         ();
-    template <typename TSingleton> const TSingleton*              GetSingleton         () const;
+    template <typename TSingleton> TSingleton&                    GetSingleton         ();
+    template <typename TSingleton> const TSingleton&              GetSingleton         () const;
+    template <typename TSingleton> SingletonTypeId                GetSingletonTypeId   () const;
 
     // System members
     template <typename TSystem> void                              RegisterSystem       ();
@@ -99,6 +101,7 @@ private:
 
     // Member variables
     ComponentRegistry m_componentRegistry;
+    SingletonRegistry m_singletonRegistry;
     SystemRegistry m_systemRegistry;
     std::unordered_map<EntityId, uint32_t> m_idToEntity;
     std::vector<EntityStorage> m_entities;
@@ -184,6 +187,26 @@ const TComponent* Encosys::GetComponent (EntityId e) const {
 template <typename TComponent>
 ComponentTypeId Encosys::GetComponentTypeId () const {
     return m_componentRegistry.GetTypeId<TComponent>();
+}
+
+template <typename TSingleton>
+SingletonTypeId Encosys::RegisterSingleton () {
+    return m_singletonRegistry.Register<TSingleton>();
+}
+
+template <typename TSingleton>
+TSingleton& Encosys::GetSingleton () {
+    return m_singletonRegistry.GetSingleton<TSingleton>();
+}
+
+template <typename TSingleton>
+const TSingleton& Encosys::GetSingleton () const {
+    return m_singletonRegistry.GetSingleton<TSingleton>();
+}
+
+template <typename TSingleton>
+SingletonTypeId Encosys::GetSingletonTypeId () const {
+    return m_singletonRegistry.GetTypeId<TSingleton>();
 }
 
 template <typename TSystem>

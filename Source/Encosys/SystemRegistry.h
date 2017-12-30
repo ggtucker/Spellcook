@@ -22,12 +22,13 @@ public:
         using TDecayed = std::decay_t<TSystem>;
         const SystemTypeId id = Count();
         ENCOSYS_ASSERT_(m_typeToId.find(typeid(TDecayed)) == m_typeToId.end());
-        m_systemTypes[id] = SystemType(id);
+        SystemType& systemType = m_systemTypes[id];
+        systemType = SystemType(id);
         m_typeToId[typeid(TDecayed)] = id;
 
         System* system = new TSystem();
         system->m_encosys = &encosys;
-        system->m_typeId = id;
+        system->m_type = &systemType;
         ENCOSYS_ASSERT_(system != nullptr);
         m_systems.push_back(system);
         return id;

@@ -12,6 +12,10 @@
 #define ENCOSYS_MAX_COMPONENTS_ 64
 #endif
 
+#ifndef ENCOSYS_MAX_SINGLETONS_
+#define ENCOSYS_MAX_SINGLETONS_ 32
+#endif
+
 #ifndef ENCOSYS_TIME_TYPE_
 #define ENCOSYS_TIME_TYPE_ float
 #endif
@@ -28,6 +32,7 @@ using SystemTypeId = uint32_t;
 using TimeDelta = ENCOSYS_TIME_TYPE_;
 
 using ComponentBitset = std::bitset<ENCOSYS_MAX_COMPONENTS_>;
+using SingletonBitset = std::bitset<ENCOSYS_MAX_SINGLETONS_>;
 
 const uint32_t c_invalidIndex = static_cast<uint32_t>(-1);
 

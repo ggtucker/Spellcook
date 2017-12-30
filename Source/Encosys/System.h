@@ -16,21 +16,36 @@ public:
     virtual void Update (TimeDelta delta) = 0;
 
 protected:
-    template <typename TComponent> void RequiredComponent (SystemType& type, ComponentUsage usage) {
-        type.RequiredComponent(GetEncosys().GetComponentTypeId<TComponent>(), usage);
+    template <typename TComponent> void RequiredComponent (SystemType& type, Access access) {
+        type.RequiredComponent(m_encosys->GetComponentTypeId<TComponent>(), access);
     }
 
-    template <typename TComponent> void OptionalComponent (SystemType& type, ComponentUsage usage) {
-        type.OptionalComponent(GetEncosys().GetComponentTypeId<TComponent>(), usage);
+    template <typename TComponent> void OptionalComponent (SystemType& type, Access access) {
+        type.OptionalComponent(m_encosys->GetComponentTypeId<TComponent>(), access);
     }
 
-    Encosys& GetEncosys () { return *m_encosys; }
-    SystemIter SystemIterator () { return SystemIter(*m_encosys, m_typeId); }
+    template <typename TSingleton> void RequiredSingleton (SystemType& type, Access access) {
+        type.RequiredSingleton(m_encosys->GetSingletonTypeId<TSingleton>(), access);
+    }
+
+    SystemIter SystemIterator () { return SystemIter(*m_encosys, *m_type); }
+
+    template <typename TSingleton>
+    TSingleton& WriteSingleton () {
+        ENCOSYS_ASSERT_(m_type->IsSingletonWriteAllowed(m_encosys->GetSingletonTypeId<TSingleton>()));
+        return m_encosys->GetSingleton<TSingleton>();
+    }
+
+    template <typename TSingleton>
+    const TSingleton& ReadSingleton () const {
+        ENCOSYS_ASSERT_(m_type->IsSingletonReadAllowed(m_encosys->GetSingletonTypeId<TSingleton>()));
+        return m_encosys->GetSingleton<TSingleton>();
+    }
 
 private:
     friend class SystemRegistry;
     Encosys* m_encosys;
-    SystemTypeId m_typeId;
+    SystemType* m_type;
 };
 
 }

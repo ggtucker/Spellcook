@@ -4,7 +4,10 @@
 #include "Game/ComponentVelocity.h"
 #include "Render/ComponentRender.h"
 
+#include "GameUI/SingletonInput.h"
+
 #include "Game/SystemMovement.h"
+#include "GameUI/SystemInput.h"
 #include "GameUI/SystemRender.h"
 
 #include "GameUI/InputHandler.h"
@@ -44,7 +47,11 @@ void CEngine::Initialize () {
     m_encosys.RegisterComponent<SComponentVelocity>();
     m_encosys.RegisterComponent<SComponentRender>();
 
+    // Register singletons
+    m_encosys.RegisterSingleton<SSingletonInput>();
+
     // Register systems
+    m_encosys.RegisterSystem<CSystemInput>();
     m_encosys.RegisterSystem<CSystemMovement>();
     m_encosys.RegisterSystem<CSystemRender>();
 

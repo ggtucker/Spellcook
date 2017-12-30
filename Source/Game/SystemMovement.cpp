@@ -4,8 +4,8 @@
 #include "Game/ComponentVelocity.h"
 
 void CSystemMovement::Initialize (ecs::SystemType& type) {
-    RequiredComponent<SComponentPosition>(type, ecs::ComponentUsage::Write);
-    RequiredComponent<SComponentVelocity>(type, ecs::ComponentUsage::Read);
+    RequiredComponent<SComponentPosition>(type, ecs::Access::Write);
+    RequiredComponent<SComponentVelocity>(type, ecs::Access::Read);
 }
 
 void CSystemMovement::Update (ecs::TimeDelta delta) {

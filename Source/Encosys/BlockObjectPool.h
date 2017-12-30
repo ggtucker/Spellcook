@@ -39,7 +39,7 @@ public:
     }
 
     // Must not destroy the same index more than once
-    void Destroy (uint32_t index) override {
+    virtual void Destroy (uint32_t index) override {
         GetObject(index).~T();
         m_freeIndices.push_back(index);
     }
