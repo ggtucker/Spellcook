@@ -64,7 +64,7 @@ CVector3T<T> Normalize (const CVector3T<T>& a) { CVector3T<T> b = a; b.Normalize
 template <typename T>
 CVector3T<T> Cross (const CVector3T<T>& a, const CVector3T<T>& b) { return a.Cross(b); }
 
-using CVector3 = CVector3T<float>;
-using CVector3f = CVector3T<CFixed>;
+using Vec3 = CVector3T<float>;
+using Vec3f = CVector3T<CFixed>;
 
-}
+} // namespace math

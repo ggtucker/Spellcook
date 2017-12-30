@@ -62,7 +62,7 @@ public:
 template <typename T>
 CVector4T<T> Normalize (const CVector4T<T>& a) { CVector4T<T> b = a; b.Normalize(); return b; }
 
-using CVector4 = CVector4T<float>;
-using CVector4f = CVector4T<CFixed>;
+using Vec4 = CVector4T<float>;
+using Vec4f = CVector4T<CFixed>;
 
 } // namespace math

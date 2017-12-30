@@ -2,7 +2,6 @@
 #include "Render/Window.h"
 
 #include "Core/Fixed.h"
-#include "Math/Matrix4.h"
 #include "Math/Trig.h"
 #include <iostream>
 
@@ -15,8 +14,6 @@ int main () {
     if (!window.Create(windowContext)) {
         return -1;
     }
-
-    math::CMatrix4f matrix;
 
     std::cout << "S(    0):" << math::Sin(F_0) << " C(    0):" << math::Cos(F_0) << std::endl;
     std::cout << "S( pi/2):" << math::Sin(F_1) << " C( pi/2):" << math::Cos(F_1) << std::endl;

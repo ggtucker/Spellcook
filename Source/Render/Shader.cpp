@@ -94,7 +94,7 @@ void CShader::SetFloat (const std::string& name, float value) const {
     glUniform1f(glGetUniformLocation(m_program, name.c_str()), value);
 }
 
-void CShader::SetVec4 (const std::string& name, const math::CVector4& value) const {
+void CShader::SetVec4 (const std::string& name, const math::Vec4& value) const {
     glUniform4f(
         glGetUniformLocation(m_program, name.c_str()),
         value.x,
@@ -104,7 +104,7 @@ void CShader::SetVec4 (const std::string& name, const math::CVector4& value) con
     );
 }
 
-void CShader::SetMat4 (const std::string& name, const math::CMatrix4& value) const {
+void CShader::SetMat4 (const std::string& name, const math::Mat4& value) const {
     glUniformMatrix4fv(
         glGetUniformLocation(m_program, name.c_str()),
         1,

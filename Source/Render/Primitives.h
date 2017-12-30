@@ -4,7 +4,7 @@
 
 namespace NPrimitives {
 
-void DrawTriangle (const math::CVector3f& position);
-void DrawRectangle (const math::CVector3f& position);
+void DrawTriangle (const math::Vec3f& position);
+void DrawRectangle (const math::Vec3f& position);
 
 } // namespace NPrimitives

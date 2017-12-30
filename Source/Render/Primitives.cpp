@@ -1,7 +1,7 @@
 #include "Primitives.h"
 #include <glad/glad.h>
 
-void NPrimitives::DrawTriangle (const math::CVector3f& position) {
+void NPrimitives::DrawTriangle (const math::Vec3f& position) {
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -20,7 +20,7 @@ void NPrimitives::DrawTriangle (const math::CVector3f& position) {
     glDeleteBuffers(1, &VBO);
 }
 
-void NPrimitives::DrawRectangle (const math::CVector3f& position) {
+void NPrimitives::DrawRectangle (const math::Vec3f& position) {
     float vertices[] = {
         // positions          // colors           // texture coords
          0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right

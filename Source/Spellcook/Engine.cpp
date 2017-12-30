@@ -41,9 +41,9 @@ void CEngine::Initialize () {
     // Manually create the player entity
     ecs::Entity player = m_encosys.Get(m_encosys.Create());
     SComponentPosition& position = player.AddComponent<SComponentPosition>();
-    position.m_position = math::CVector3f(F_4, F_3, F_2);
+    position.m_position = math::Vec3f(F_4, F_3, F_2);
     SComponentVelocity& velocity = player.AddComponent<SComponentVelocity>();
-    velocity.m_velocity = math::CVector3f(F_1, F_1, F_1);
+    velocity.m_velocity = math::Vec3f(F_1, F_1, F_1);
     SComponentRender& render = player.AddComponent<SComponentRender>();
     render.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
     render.m_texture.Create("..\\Bin\\Textures\\Geoff.png");

@@ -120,7 +120,7 @@ CMatrix4T<T> Rotate (const CMatrix4T<T>& m, const CVector3T<T>& a, const T& angl
     };
 }
 
-using CMatrix4 = CMatrix4T<float>;
-using CMatrix4f = CMatrix4T<CFixed>;
+using Mat4 = CMatrix4T<float>;
+using Mat4f = CMatrix4T<CFixed>;
 
 } // namespace math
