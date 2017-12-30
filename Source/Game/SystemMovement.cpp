@@ -3,9 +3,9 @@
 #include "Game/ComponentPosition.h"
 #include "Game/ComponentVelocity.h"
 
-void CSystemMovement::Initialize (ecs::Encosys& encosys, ecs::SystemType& type) {
-    type.RequiredComponent(encosys.GetComponentType<SComponentPosition>(), ecs::ComponentUsage::Write);
-    type.RequiredComponent(encosys.GetComponentType<SComponentVelocity>(), ecs::ComponentUsage::Read);
+void CSystemMovement::Initialize (ecs::SystemType& type) {
+    RequiredComponent<SComponentPosition>(type, ecs::ComponentUsage::Write);
+    RequiredComponent<SComponentVelocity>(type, ecs::ComponentUsage::Read);
 }
 
 void CSystemMovement::Update (ecs::SystemContext& context, ecs::TimeDelta delta) {

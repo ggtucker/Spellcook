@@ -20,9 +20,9 @@ void CEngine::RunMainLoop () {
     CTime accumulatedTime;
     CTimer engineTimer;
 
-    while (m_window.IsOpen()) {
+    while (g_window.IsOpen()) {
         CInputEvent event;
-        while (m_window.PollInput(event)) {
+        while (g_window.PollInput(event)) {
             ProcessInput(event);
         }
 
@@ -46,7 +46,7 @@ void CEngine::Initialize () {
 
     // Register systems
     m_encosys.RegisterSystem<CSystemMovement>();
-    m_encosys.RegisterSystem<CSystemRender>(m_window);
+    m_encosys.RegisterSystem<CSystemRender>();
 
     // Initialize encosys
     m_encosys.Initialize();
@@ -68,11 +68,11 @@ void CEngine::Terminate () {
 
 void CEngine::ProcessInput (const CInputEvent& event) {
     if (event.m_type == EInputEvent::Closed) {
-        m_window.Close();
+        g_window.Close();
     }
     else {
         for (CInputHandler* inputHandler : m_inputHandlers) {
-            if (inputHandler->ProcessInput(m_window, event)) {
+            if (inputHandler->ProcessInput(g_window, event)) {
                 return;
             }
         }

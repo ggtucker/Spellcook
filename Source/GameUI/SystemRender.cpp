@@ -6,13 +6,13 @@
 #include "Render/Primitives.h"
 #include "Render/Window.h"
 
-void CSystemRender::Initialize (ecs::Encosys& encosys, ecs::SystemType& type) {
-    type.RequiredComponent(encosys.GetComponentType<SComponentPosition>(), ecs::ComponentUsage::Read);
-    type.RequiredComponent(encosys.GetComponentType<SComponentRender>(), ecs::ComponentUsage::Read);
+void CSystemRender::Initialize (ecs::SystemType& type) {
+    RequiredComponent<SComponentPosition>(type, ecs::ComponentUsage::Read);
+    RequiredComponent<SComponentRender>(type, ecs::ComponentUsage::Read);
 }
 
 void CSystemRender::Update (ecs::SystemContext& context, ecs::TimeDelta delta) {
-    m_window.Clear();
+    g_window.Clear();
 
     for (uint32_t i = 0; i < context.EntityCount(); ++i) {
         const SComponentPosition& position = *context.ReadComponent<SComponentPosition>(i);
@@ -34,5 +34,5 @@ void CSystemRender::Update (ecs::SystemContext& context, ecs::TimeDelta delta) {
         NPrimitives::DrawCube(position.m_position);
     }
 
-    m_window.SwapBuffers();
+    g_window.SwapBuffers();
 }

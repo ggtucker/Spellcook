@@ -48,3 +48,5 @@ private:
     std::queue<CInputEvent> m_inputQueue{};
     bool m_keyRepeatEnabled{};
 };
+
+extern CWindow g_window;

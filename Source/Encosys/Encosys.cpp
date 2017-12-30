@@ -1,21 +1,23 @@
 #include "Encosys.h"
 
 #include <algorithm>
-#include <cassert>
 #include "ComponentRegistry.h"
 #include "System.h"
 
 namespace ecs {
 
 void Encosys::Initialize () {
+    // Initialize systems
     for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
-        m_systemRegistry.GetSystem(i)->Initialize(*this, m_systemRegistry[i]);
+        m_systemRegistry.GetSystem(i)->Initialize(m_systemRegistry.GetSystemType(i));
     }
+    // Initialize singletons
+
 }
 
 void Encosys::Update (TimeDelta delta) {
     for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
-        SystemContext systemContext(*this, m_systemRegistry[i]);
+        SystemContext systemContext(*this, m_systemRegistry.GetSystemType(i));
         m_systemRegistry.GetSystem(i)->Update(systemContext, delta);
     }
 }
@@ -49,7 +51,7 @@ EntityId Encosys::Create (bool active) {
 EntityId Encosys::Copy (EntityId e, bool active) {
     // Cache off the information about the entity to copy
     auto entityIter = m_idToEntity.find(e);
-    assert(entityIter != m_idToEntity.end());
+    ENCOSYS_ASSERT_(entityIter != m_idToEntity.end());
     const EntityStorage& entityToCopy = m_entities[entityIter->second];
 
     EntityId id(m_entityIdCounter);
@@ -89,7 +91,7 @@ EntityId Encosys::Copy (EntityId e, bool active) {
 void Encosys::Destroy (EntityId e) {
     // Verify this entity exists
     auto entityIter = m_idToEntity.find(e);
-    assert(entityIter != m_idToEntity.end());
+    ENCOSYS_ASSERT_(entityIter != m_idToEntity.end());
 
     // Cache off the information about this entity
     uint32_t entityIndex = entityIter->second;
@@ -119,7 +121,7 @@ bool Encosys::IsValid (EntityId e) const {
 bool Encosys::IsActive (EntityId e) const {
     // Verify this entity exists
     auto entityIter = m_idToEntity.find(e);
-    assert(entityIter != m_idToEntity.end());
+    ENCOSYS_ASSERT_(entityIter != m_idToEntity.end());
 
     return IndexIsActive(entityIter->second);
 }
@@ -127,7 +129,7 @@ bool Encosys::IsActive (EntityId e) const {
 void Encosys::SetActive (EntityId e, bool active) {
     // Verify this entity exists
     auto entityIter = m_idToEntity.find(e);
-    assert(entityIter != m_idToEntity.end());
+    ENCOSYS_ASSERT_(entityIter != m_idToEntity.end());
 
     uint32_t entityIndex = entityIter->second;
     IndexSetActive(entityIndex, active);
@@ -135,6 +137,10 @@ void Encosys::SetActive (EntityId e, bool active) {
 
 uint32_t Encosys::EntityCount () const {
     return static_cast<uint32_t>(m_entities.size());
+}
+
+uint32_t Encosys::ActiveEntityCount () const {
+    return m_entityActiveCount;
 }
 
 void Encosys::IndexSwapEntities (uint32_t lhsIndex, uint32_t rhsIndex) {

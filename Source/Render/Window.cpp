@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include "Core/CoreDebug.h"
 
+CWindow g_window; // define global window
+
 DefineLogStatic_(Window, ELogCategory::Render, "Window.txt", 0);
 
 static NKeyboard::EKey GlfwKeyCodeToKeyboardKey (int key);

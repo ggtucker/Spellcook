@@ -6,12 +6,9 @@
 
 class CInputEvent;
 class CInputHandler;
-class CWindow;
 
 class CEngine {
 public:
-    explicit CEngine (CWindow& window) : m_window{window} {}
-
     void RunMainLoop ();
 
 private:
@@ -22,7 +19,6 @@ private:
     void Update (CFixed delta);
 
 private:
-    CWindow& m_window;
     ecs::Encosys m_encosys;
     std::vector<CInputHandler*> m_inputHandlers{};
 };
