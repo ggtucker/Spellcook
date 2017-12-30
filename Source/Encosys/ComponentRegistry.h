@@ -2,7 +2,7 @@
 
 #include "BlockObjectPool.h"
 #include "ComponentType.h"
-#include "EncosysTypes.h"
+#include "EncosysConfig.h"
 #include <array>
 #include <cassert>
 #include <map>
@@ -12,18 +12,6 @@ namespace ecs {
 
 class ComponentRegistry {
 public:
-    ComponentRegistry () {
-        ComponentList::ForTypes([this](auto t) {
-            using TComponent = std::decay_t<TYPE_OF(t)>;
-            const ComponentTypeId id = Count();
-            m_componentTypes[id] = ComponentType(id, sizeof(TComponent));
-            m_typeToId[typeid(TComponent)] = id;
-
-            m_componentPools[id] = new BlockObjectPool<TComponent>();
-            assert(m_componentPools[id] != nullptr);
-        });
-    }
-
     virtual ~ComponentRegistry () {
         for (uint32_t i = 0; i < Count(); ++i) {
             delete m_componentPools[i];
@@ -31,19 +19,43 @@ public:
     }
 
     template <typename TComponent>
-    static constexpr ComponentTypeId GetTypeId () {
-        static_assert(ComponentList::Contains<std::decay_t<TComponent>>(), "Component type was not registered.");
-        return ComponentList::IndexOf<std::decay_t<TComponent>>();
+    ComponentTypeId Register () {
+        using TDecayed = std::decay_t<TComponent>;
+        const ComponentTypeId id = Count();
+        assert(id < ENCOSYS_MAX_COMPONENTS_);
+        assert(m_typeToId.find(typeid(TDecayed)) == m_typeToId.end());
+        m_componentTypes[id] = ComponentType(id, sizeof(TDecayed));
+        m_typeToId[typeid(TDecayed)] = id;
+
+        m_componentPools[id] = new BlockObjectPool<TDecayed>();
+        assert(m_componentPools[id] != nullptr);
+        return id;
+    }
+
+    template <typename TComponent>
+    ComponentTypeId GetTypeId () const {
+        auto it = m_typeToId.find(typeid(std::decay_t<TComponent>));
+        assert(it != m_typeToId.cend());
+        return it->second;
     }
 
     template <typename TComponent>
     const ComponentType& GetType () const {
-        return m_componentTypes[GetTypeId<TComponent>()];
+        return GetType(GetTypeId<TComponent>());
     }
 
     const ComponentType& GetType (ComponentTypeId id) const {
         assert(id < Count());
         return m_componentTypes[id];
+    }
+
+    bool HasType (ComponentTypeId id) const {
+        return id < Count();
+    }
+
+    template <typename TComponent>
+    bool HasType () {
+        return HasType(GetTypeId<TComponent>());
     }
 
     template <typename TComponent>
@@ -59,8 +71,8 @@ public:
     const ComponentType& operator[] (uint32_t index) const { return m_componentTypes[index]; }
 
 private:
-    std::array<BlockMemoryPool*, ComponentList::Size> m_componentPools{};
-    std::array<ComponentType, ComponentList::Size> m_componentTypes;
+    std::array<BlockMemoryPool*, ENCOSYS_MAX_COMPONENTS_> m_componentPools{};
+    std::array<ComponentType, ENCOSYS_MAX_COMPONENTS_> m_componentTypes;
     std::map<std::type_index, ComponentTypeId> m_typeToId{};
 };
 

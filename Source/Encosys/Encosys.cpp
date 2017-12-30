@@ -7,12 +7,16 @@
 
 namespace ecs {
 
+void Encosys::Initialize () {
+    for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
+        m_systemRegistry.GetSystem(i)->Initialize(*this, m_systemRegistry[i]);
+    }
+}
+
 void Encosys::Update (TimeDelta delta) {
     for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
-        ecs::System* system = m_systemRegistry.GetSystem(i);
-        system->PreUpdate();
-        system->Update(*this, m_systemRegistry.GetSystemType(i), delta);
-        system->PostUpdate();
+        SystemContext systemContext(*this, m_systemRegistry[i]);
+        m_systemRegistry.GetSystem(i)->Update(systemContext, delta);
     }
 }
 
@@ -108,12 +112,6 @@ void Encosys::Destroy (EntityId e) {
     m_entities.pop_back();
 }
 
-Entity Encosys::Get (EntityId e) {
-    auto entityIter = m_idToEntity.find(e);
-    assert(entityIter != m_idToEntity.end());
-    return Entity(*this, m_entities[entityIter->second]);
-}
-
 bool Encosys::IsValid (EntityId e) const {
     return m_idToEntity.find(e) != m_idToEntity.end();
 }
@@ -137,14 +135,6 @@ void Encosys::SetActive (EntityId e, bool active) {
 
 uint32_t Encosys::EntityCount () const {
     return static_cast<uint32_t>(m_entities.size());
-}
-
-uint32_t Encosys::ActiveEntityCount () const {
-    return m_entityActiveCount;
-}
-
-const ComponentType& Encosys::GetComponentType (ComponentTypeId typeId) const {
-    return m_componentRegistry.GetType(typeId);
 }
 
 void Encosys::IndexSwapEntities (uint32_t lhsIndex, uint32_t rhsIndex) {

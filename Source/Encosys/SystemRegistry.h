@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BlockObjectPool.h"
-#include "EncosysTypes.h"
+#include "EncosysConfig.h"
 #include "SystemType.h"
 #include <array>
 #include <cassert>
@@ -22,7 +22,7 @@ public:
         using TDecayed = std::decay_t<TSystem>;
         const SystemTypeId id = Count();
         assert(m_typeToId.find(typeid(TDecayed)) == m_typeToId.end());
-        m_systemTypes.push_back(SystemType(id));
+        m_systemTypes[id] = SystemType(id);
         m_typeToId[typeid(TDecayed)] = id;
 
         System* system = new TSystem(std::forward<TArgs>(args)...);
@@ -38,21 +38,30 @@ public:
         return it->second;
     }
 
-    bool HasType (SystemTypeId id) const { return id < Count(); }
+    const SystemType& GetType (SystemTypeId id) const {
+        assert(id < Count());
+        return m_systemTypes[id];
+    }
+
+    bool HasType (SystemTypeId id) const {
+        return id < Count();
+    }
 
     template <typename TSystem>
-    bool HasType () { return HasType(GetTypeId<TSystem>()); }
+    bool HasType () {
+        return HasType(GetTypeId<TSystem>());
+    }
+
+    System* GetSystem (uint32_t index) { return m_systems[index]; }
+    const System* GetSystem (uint32_t index) const { return m_systems[index]; }
 
     uint32_t Count () const { return static_cast<uint32_t>(m_typeToId.size()); }
-    System* GetSystem (SystemTypeId index) { return m_systems[index]; }
-    const System* GetSystem (SystemTypeId index) const { return m_systems[index]; }
-
-    SystemType& GetSystemType (SystemTypeId index) { return m_systemTypes[index]; }
-    const SystemType& GetSystemType (SystemTypeId index) const { return m_systemTypes[index]; }
+    SystemType& operator[] (uint32_t index) { return m_systemTypes[index]; }
+    const SystemType& operator[] (uint32_t index) const { return m_systemTypes[index]; }
 
 private:
     std::vector<System*> m_systems{};
-    std::vector<SystemType> m_systemTypes;
+    std::array<SystemType, ENCOSYS_MAX_COMPONENTS_> m_systemTypes;
     std::map<std::type_index, SystemTypeId> m_typeToId{};
 };
 

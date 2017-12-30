@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Core/Fixed.h"
 #include "Encosys/Encosys.h"
 
 class CInputEvent;

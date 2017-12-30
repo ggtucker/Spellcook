@@ -98,7 +98,7 @@ project "Core"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson {  }
+	dependson { }
     files { "Source/Core/**.h", "Source/Core/**.cpp" }
 
 project "Encosys"

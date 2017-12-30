@@ -1,8 +1,13 @@
 #include "Engine.h"
 
+#include "Game/ComponentPosition.h"
+#include "Game/ComponentVelocity.h"
+#include "Render/ComponentRender.h"
+
 #include "Game/SystemMovement.h"
-#include "GameUI/InputHandler.h"
 #include "GameUI/SystemRender.h"
+
+#include "GameUI/InputHandler.h"
 #include "Render/InputEvent.h"
 #include "Render/Timer.h"
 #include "Render/Window.h"
@@ -34,17 +39,25 @@ void CEngine::RunMainLoop () {
 }
 
 void CEngine::Initialize () {
+    // Register components
+    m_encosys.RegisterComponent<SComponentPosition>();
+    m_encosys.RegisterComponent<SComponentVelocity>();
+    m_encosys.RegisterComponent<SComponentRender>();
+
     // Register systems
     m_encosys.RegisterSystem<CSystemMovement>();
     m_encosys.RegisterSystem<CSystemRender>(m_window);
 
+    // Initialize encosys
+    m_encosys.Initialize();
+
     // Manually create the player entity
-    ecs::Entity player = m_encosys.Get(m_encosys.Create());
-    SComponentPosition& position = player.AddComponent<SComponentPosition>();
+    ecs::EntityId player = m_encosys.Create();
+    SComponentPosition& position = m_encosys.AddComponent<SComponentPosition>(player);
     position.m_position = math::Vec3f(F_4, F_3, F_2);
-    SComponentVelocity& velocity = player.AddComponent<SComponentVelocity>();
+    SComponentVelocity& velocity = m_encosys.AddComponent<SComponentVelocity>(player);
     velocity.m_velocity = math::Vec3f(F_1, F_1, F_1);
-    SComponentRender& render = player.AddComponent<SComponentRender>();
+    SComponentRender& render = m_encosys.AddComponent<SComponentRender>(player);
     render.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
     render.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
 }
@@ -67,5 +80,5 @@ void CEngine::ProcessInput (const CInputEvent& event) {
 }
 
 void CEngine::Update (CFixed delta) {
-    m_encosys.Update(delta);
+    m_encosys.Update(delta.ToFloat());
 }

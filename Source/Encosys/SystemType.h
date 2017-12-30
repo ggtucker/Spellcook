@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EncosysTypes.h"
+#include "EncosysConfig.h"
 
 namespace ecs {
 
@@ -16,12 +16,26 @@ public:
 
     SystemTypeId Id () const { return m_id; }
 
+    void RequiredComponent (ComponentTypeId type, ComponentUsage usage) {
+        m_requiredBitset.set(type, true);
+        OptionalComponent(type, usage);
+    }
+
+    void OptionalComponent (ComponentTypeId type, ComponentUsage usage) {
+        m_readBitset.set(type);
+        m_writeBitset.set(type, usage == ComponentUsage::Write);
+    }
+
     const ComponentBitset& GetRequiredBitset () const { return m_requiredBitset; }
-    void SetRequiredComponents (ComponentBitset bitset) { m_requiredBitset = bitset; }
+
+    bool IsReadAllowed (ComponentTypeId typeId) const { return m_readBitset.test(typeId); }
+    bool IsWriteAllowed (ComponentTypeId typeId) const { return m_writeBitset.test(typeId); }
 
 private:
     SystemTypeId m_id{};
     ComponentBitset m_requiredBitset{};
+    ComponentBitset m_readBitset{};
+    ComponentBitset m_writeBitset{};
 };
 
 }
