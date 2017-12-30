@@ -1,5 +1,6 @@
 #include "SystemRender.h"
 
+#include "Math/Matrix4.h"
 #include "Render/Primitives.h"
 
 void CSystemRender::PreUpdate () {
@@ -14,8 +15,11 @@ void CSystemRender::Update (SystemEntity entity, ecs::TimeDelta delta) {
     const SComponentPosition& position = *entity.ReadComponent<SComponentPosition>();
     const SComponentRender& render = *entity.ReadComponent<SComponentRender>();
 
+    math::CMatrix4 transform;
+    transform = math::Translate(transform, math::CVector3(0.5f, -0.5f, 0.f));
+    transform = math::Rotate(transform, math::CVector3(0.f, 0.f, 1.f), render.m_timer.TimeElapsed().Seconds());
+    render.m_shader.SetMat4("uTransform", transform);
+
     render.m_shader.Use();
-    float greenValue = sin(render.m_timer.TimeElapsed().Seconds()) / 2.f + 0.5f;
-    render.m_shader.SetVec4f("TriangleColor", CVector4f(F_0, CFixed::FromFloat(greenValue), F_0, F_1));
-    NPrimitives::DrawTriangle(position.m_position);
+    NPrimitives::DrawRectangle(position.m_position);
 }

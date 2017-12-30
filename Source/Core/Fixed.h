@@ -2,7 +2,15 @@
 
 #include <iosfwd>
 
+#define F_2_PI CFixed::FromBits(0x00006488)
+#define F_PI CFixed::FromBits(0x00003244)
+#define F_HALF_PI CFixed::FromBits(0x00001922)
+#define F_QUARTER_PI CFixed::FromBits(0x00000C91)
+
 #define F_0_03125 CFixed::FromBits(0x00000080)
+#define F_0_5 CFixed::FromBits(0x00000800)
+#define F_1_5 CFixed::FromBits(0x00001800)
+
 #define F_0 CFixed::FromBits(0x00000000)
 #define F_1 CFixed::FromBits(0x00001000)
 #define F_2 CFixed::FromBits(0x00002000)
@@ -27,6 +35,7 @@ public:
     // Type conversion
     float ToFloat () const { return static_cast<float>(m_value) / c_fractionPrecision; }
     static CFixed FromFloat (float value) { CFixed f; f.m_value = static_cast<int>(value * c_fractionPrecision); return f; }
+    explicit operator float () const { return ToFloat(); }
 
     // Bit conversions
     int ToBits () const { return m_value; }

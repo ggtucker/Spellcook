@@ -51,7 +51,7 @@ project "Spellcook"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core", "Encosys", "Game", "GameUI" }
+    links { "Core", "Encosys", "Game", "GameUI", "Math" }
     files { "Source/Spellcook/**.h", "Source/Spellcook/**.cpp" }
     UseRenderLib()
 
@@ -78,9 +78,9 @@ project "Render"
     language "C++"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
-    includedirs { "Source", "Libraries/glad/Include" }
+    includedirs { "Source", "Libraries/glad/Include", "Libraries/stb/Include" }
 	dependson { "Core" }
-    files { "Source/Render/**.h", "Source/Render/**.cpp", "Libraries/glad/Source/glad.c" }
+    files { "Source/Render/**.h", "Source/Render/**.cpp", "Libraries/glad/Source/glad.c", "Libraries/stb/Source/stb_image.cpp" }
     IncludeGlfw()
 
 project "Math"

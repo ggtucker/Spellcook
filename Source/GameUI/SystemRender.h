@@ -9,7 +9,7 @@ struct CSystemRender : public ecs::ParallelSystem<
     ecs::ComponentDependency<SComponentPosition, ecs::Existence::Required, ecs::Access::Read>,
     ecs::ComponentDependency<SComponentRender, ecs::Existence::Required, ecs::Access::Read>
 > {
-    CSystemRender (CWindow& window) : m_window{window} {}
+    explicit CSystemRender (CWindow& window) : m_window{window} {}
 
     virtual void PreUpdate () override;
     virtual void PostUpdate () override;

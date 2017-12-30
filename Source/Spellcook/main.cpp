@@ -1,8 +1,10 @@
-#include "Encosys/Encosys.h"
 #include "Engine.h"
-#include "Game/SystemMovement.h"
-#include "GameUI/SystemRender.h"
-#include "Render/Timer.h"
+#include "Render/Window.h"
+
+#include "Core/Fixed.h"
+#include "Math/Matrix4.h"
+#include "Math/Trig.h"
+#include <iostream>
 
 int main () {
     CWindow window;
@@ -13,6 +15,14 @@ int main () {
     if (!window.Create(windowContext)) {
         return -1;
     }
+
+    math::CMatrix4f matrix;
+
+    std::cout << "S(    0):" << math::Sin(F_0) << " C(    0):" << math::Cos(F_0) << std::endl;
+    std::cout << "S( pi/2):" << math::Sin(F_1) << " C( pi/2):" << math::Cos(F_1) << std::endl;
+    std::cout << "S(   pi):" << math::Sin(F_2) << " C(   pi):" << math::Cos(F_2) << std::endl;
+    std::cout << "S(3pi/2):" << math::Sin(F_3) << " C(3pi/2):" << math::Cos(F_3) << std::endl;
+    std::cout << "S(  2pi):" << math::Sin(F_4) << " C(  2pi):" << math::Cos(F_4) << std::endl;
 
     CEngine engine(window);
     engine.RunMainLoop();

@@ -20,7 +20,7 @@ static bool ReadFileContents (const std::string& fileName, std::ostringstream& f
 static bool CompileShader (uint32_t& shaderId, GLenum shaderType, const std::string& fileName) {
     std::ostringstream shaderStream;
     if (!ReadFileContents(fileName, shaderStream)) {
-        LogError_(Shader, "Failed to open file: ", fileName);
+        LogError_(Shader, "Failed to read shader file: ", fileName);
         return false;
     }
     std::string shaderString = shaderStream.str();
@@ -94,12 +94,21 @@ void CShader::SetFloat (const std::string& name, float value) const {
     glUniform1f(glGetUniformLocation(m_program, name.c_str()), value);
 }
 
-void CShader::SetVec4f (const std::string& name, const CVector4f& value) const {
+void CShader::SetVec4 (const std::string& name, const math::CVector4& value) const {
     glUniform4f(
         glGetUniformLocation(m_program, name.c_str()),
-        value.x.ToFloat(),
-        value.y.ToFloat(),
-        value.z.ToFloat(),
-        value.w.ToFloat()
+        value.x,
+        value.y,
+        value.z,
+        value.w
+    );
+}
+
+void CShader::SetMat4 (const std::string& name, const math::CMatrix4& value) const {
+    glUniformMatrix4fv(
+        glGetUniformLocation(m_program, name.c_str()),
+        1,
+        false,
+        value.ValuePtr()
     );
 }

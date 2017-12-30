@@ -3,5 +3,5 @@
 #include "Math/Vector3.h"
 
 struct SComponentPosition {
-    CVector3f m_position{};
+    math::CVector3f m_position{};
 };

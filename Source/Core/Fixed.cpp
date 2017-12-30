@@ -6,6 +6,7 @@
 #include <ostream>
 #include <sstream>
 
+
 CFixed CFixed::Sqrt () const {
     Assert_(m_value >= 0);
     // Newton-Raphson Method
