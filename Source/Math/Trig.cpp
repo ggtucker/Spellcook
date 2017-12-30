@@ -50,12 +50,20 @@ CFixed Cos (CFixed value) {
     return Sin(F_1 - value);
 }
 
+CFixed Tan (CFixed value) {
+    return Sin(value) / Cos(value);
+}
+
 float Sin (float value) {
     return sin(value);
 }
 
 float Cos (float value) {
     return cos(value);
+}
+
+float Tan (float value) {
+    return tan(value);
 }
 
 } // namespace math

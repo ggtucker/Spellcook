@@ -48,12 +48,6 @@ public:
     template <typename TComponent> TComponent*                    GetComponent       ();
     template <typename TComponent> const TComponent*              GetComponent       () const;
 
-    // Non-template component members
-    uint8_t*                                                      AddComponent       (ComponentTypeId typeId);
-    void                                                          RemoveComponent    (ComponentTypeId typeId);
-    uint8_t*                                                      GetComponent       (ComponentTypeId typeId);
-    const uint8_t*                                                GetComponent       (ComponentTypeId typeId) const;
-
 private:
     Encosys& m_encosys;
     EntityStorage& m_storage;

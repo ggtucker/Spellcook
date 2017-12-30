@@ -170,31 +170,4 @@ void Encosys::IndexSetActive (uint32_t& index, bool active) {
     index = newIndex;
 }
 
-uint8_t* Entity::AddComponent (ComponentTypeId typeId) {
-    auto& container = m_encosys.m_componentRegistry.GetStorage(typeId);
-    uint32_t componentIndex = container.Create();
-    m_storage.SetComponentIndex(typeId, componentIndex);
-    return container.GetData(componentIndex);
-}
-
-void Entity::RemoveComponent (ComponentTypeId typeId) {
-    if (m_storage.HasComponent(typeId)) {
-        auto& container = m_encosys.m_componentRegistry.GetStorage(typeId);
-        container.Destroy(m_storage.GetComponentIndex(typeId));
-        m_storage.RemoveComponentIndex(typeId);
-    }
-}
-
-uint8_t* Entity::GetComponent (ComponentTypeId typeId) {
-    return const_cast<uint8_t*>(static_cast<const Entity*>(this)->GetComponent(typeId));
-}
-
-const uint8_t* Entity::GetComponent (ComponentTypeId typeId) const {
-    if (!m_storage.HasComponent(typeId)) {
-        return nullptr;
-    }
-    const auto& container = m_encosys.m_componentRegistry.GetStorage(typeId);
-    return container.GetData(m_storage.GetComponentIndex(typeId));
-}
-
 } // namespace ecs

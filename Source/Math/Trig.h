@@ -10,10 +10,16 @@ CFixed Sin (CFixed value);
 // value is in normalized units where 1 is equivalent to pi/2 radians
 CFixed Cos (CFixed value);
 
+// value is in normalized units where 1 is equivalent to pi/2 radians
+CFixed Tan (CFixed value);
+
 // value is in radians
 float Sin (float value);
 
 // value is in radians
 float Cos (float value);
+
+// value is in radians
+float Tan (float value);
 
 } // namespace math

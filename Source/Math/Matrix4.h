@@ -33,7 +33,7 @@ public:
     }
 
     void Reset () {
-        col[0][0] = 1; col[1][0] = 0; col[2][0] = 0; col[3][0] = 0;
+        col[0][0] = static_cast<T>(1); col[1][0] = 0; col[2][0] = 0; col[3][0] = 0;
         col[0][1] = 0; col[1][1] = 1; col[2][1] = 0; col[3][1] = 0;
         col[0][2] = 0; col[1][2] = 0; col[2][2] = 1; col[3][2] = 0;
         col[0][3] = 0; col[1][3] = 0; col[2][3] = 0; col[3][3] = 1;
@@ -113,10 +113,41 @@ CMatrix4T<T> Rotate (const CMatrix4T<T>& m, const CVector3T<T>& a, const T& angl
     const T s = Sin(angle);
     const T os = 1 - s;
     return m * CMatrix4T<T>{
-        a.x*a.x*oc + c,      a.x*a.y*oc - a.z*s,   a.x*a.z*oc + a.y*s,   0,
-        a.y*a.x*oc + a.z*s,  a.y*a.y*oc + c,       a.y*a.z*oc - a.x*s,   0,
-        a.z*a.x*oc - a.y*s,  a.z*a.y*oc + a.x*s,   a.z*a.z*oc + c,       0,
-        0,                   0,                    0,                    1
+        a.x*a.x*oc + c,     a.x*a.y*oc - a.z*s, a.x*a.z*oc + a.y*s, static_cast<T>(0),
+        a.y*a.x*oc + a.z*s, a.y*a.y*oc + c,     a.y*a.z*oc - a.x*s, static_cast<T>(0),
+        a.z*a.x*oc - a.y*s, a.z*a.y*oc + a.x*s, a.z*a.z*oc + c,     static_cast<T>(0),
+        static_cast<T>(0),  static_cast<T>(0),  static_cast<T>(0),  static_cast<T>(1)
+    };
+}
+
+template <typename T>
+CMatrix4T<T> Perspective (const T& fov, const T& aspect, const T& near, const T& far) {
+    const T tanHalfFov = Tan(fov / static_cast<T>(2));
+    return CMatrix4T<T>{
+        CVector4T<T>{
+            static_cast<T>(1) / (aspect * tanHalfFov),
+            static_cast<T>(0),
+            static_cast<T>(0),
+            static_cast<T>(0)
+        },
+        CVector4T<T> {
+            static_cast<T>(0),
+            static_cast<T>(1) / tanHalfFov,
+            static_cast<T>(0),
+            static_cast<T>(0)
+        },
+        CVector4T<T> {
+            static_cast<T>(0),
+            static_cast<T>(0),
+            -(far + near) / (far - near),
+            -static_cast<T>(1)
+        },
+        CVector4T<T> {
+            static_cast<T>(0),
+            static_cast<T>(0),
+            -(static_cast<T>(2) * far * near) / (far - near),
+            static_cast<T>(0)
+        }
     };
 }
 
