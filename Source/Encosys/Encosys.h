@@ -37,7 +37,7 @@ public:
     EntityId                                         GetId              () const { return m_storage.GetId(); }
 
     bool                                             HasComponentBitset (const ComponentBitset& bitset) const { return m_storage.HasComponentBitset(bitset); }
-    template <typename TComponent> bool              HasComponent       () const { return m_storage.HasComponent(m_encosys.GetComponentType<TComponent>().Id()); }
+    template <typename TComponent> bool              HasComponent       () const { return m_storage.HasComponent(m_encosys.GetComponentTypeId<TComponent>().Id()); }
 
     template <typename TComponent> TComponent*       GetComponent       ();
     template <typename TComponent> const TComponent* GetComponent       () const;
@@ -68,7 +68,7 @@ public:
     template <typename TComponent> void                           RemoveComponent      (EntityId e);
     template <typename TComponent> TComponent*                    GetComponent         (EntityId e);
     template <typename TComponent> const TComponent*              GetComponent         (EntityId e) const;
-    template <typename TComponent> ComponentTypeId                GetComponentType     () const;
+    template <typename TComponent> ComponentTypeId                GetComponentTypeId   () const;
 
     // Singleton members
     template <typename TSingleton> SingletonTypeId                RegisterSingleton    ();
@@ -77,6 +77,9 @@ public:
 
     // System members
     template <typename TSystem> void                              RegisterSystem       ();
+    const SystemType&                                             GetSystemType        (SystemTypeId systemId) const;
+
+    // Core members
     void                                                          Initialize           ();
     void                                                          Update               (TimeDelta delta);
 
@@ -103,42 +106,6 @@ private:
     uint32_t m_entityActiveCount{};
 };
 
-class SystemContext {
-public:
-    SystemContext (Encosys& encosys, const SystemType& systemType) :
-        m_encosys{encosys},
-        m_systemType{&systemType} {
-        m_entities.reserve(encosys.ActiveEntityCount());
-        for (uint32_t e = 0; e < encosys.ActiveEntityCount(); ++e) {
-            Entity entity = encosys[e];
-            if (entity.HasComponentBitset(systemType.GetRequiredBitset())) {
-                m_entities.push_back(entity);
-            }
-        }
-    }
-
-    uint32_t EntityCount () const { return static_cast<uint32_t>(m_entities.size()); }
-
-    template <typename TComponent>
-    TComponent* WriteComponent (uint32_t index) {
-        ENCOSYS_ASSERT_(index < m_entities.size());
-        ENCOSYS_ASSERT_(m_systemType->IsWriteAllowed(m_encosys.GetComponentType<TComponent>()));
-        return m_entities[index].GetComponent<TComponent>();
-    }
-
-    template <typename TComponent>
-    const TComponent* ReadComponent (uint32_t index) const {
-        ENCOSYS_ASSERT_(index < m_entities.size());
-        ENCOSYS_ASSERT_(m_systemType->IsReadAllowed(m_encosys.GetComponentType<TComponent>()));
-        return m_entities[index].GetComponent<TComponent>();
-    }
-
-private:
-    Encosys& m_encosys;
-    const SystemType* m_systemType{};
-    std::vector<Entity> m_entities{};
-};
-
 template <typename TComponent>
 TComponent* Entity::GetComponent () {
     return const_cast<TComponent*>(static_cast<const Entity*>(this)->GetComponent<TComponent>());
@@ -147,7 +114,7 @@ TComponent* Entity::GetComponent () {
 template <typename TComponent>
 const TComponent* Entity::GetComponent () const {
     // Retrieve the registered type of the component
-    const ComponentTypeId typeId = m_encosys.GetComponentType<TComponent>();
+    const ComponentTypeId typeId = m_encosys.GetComponentTypeId<TComponent>();
 
     // Return nullptr if this entity does not have this component type
     if (!m_storage.HasComponent(typeId)) {
@@ -215,7 +182,7 @@ const TComponent* Encosys::GetComponent (EntityId e) const {
 }
 
 template <typename TComponent>
-ComponentTypeId Encosys::GetComponentType () const {
+ComponentTypeId Encosys::GetComponentTypeId () const {
     return m_componentRegistry.GetTypeId<TComponent>();
 }
 

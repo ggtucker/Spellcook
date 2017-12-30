@@ -8,10 +8,10 @@ void CSystemMovement::Initialize (ecs::SystemType& type) {
     RequiredComponent<SComponentVelocity>(type, ecs::ComponentUsage::Read);
 }
 
-void CSystemMovement::Update (ecs::SystemContext& context, ecs::TimeDelta delta) {
-    for (uint32_t i = 0; i < context.EntityCount(); ++i) {
-        const SComponentVelocity& velocity = *context.ReadComponent<SComponentVelocity>(i);
-        SComponentPosition& position = *context.WriteComponent<SComponentPosition>(i);
+void CSystemMovement::Update (ecs::TimeDelta delta) {
+    for (ecs::SystemEntity entity : SystemIterator()) {
+        const SComponentVelocity& velocity = *entity.ReadComponent<SComponentVelocity>();
+        SComponentPosition& position = *entity.WriteComponent<SComponentPosition>();
         position.m_position += velocity.m_velocity * CFixed::FromFloat(delta);
     }
 }

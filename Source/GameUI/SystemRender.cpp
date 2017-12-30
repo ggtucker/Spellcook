@@ -11,12 +11,12 @@ void CSystemRender::Initialize (ecs::SystemType& type) {
     RequiredComponent<SComponentRender>(type, ecs::ComponentUsage::Read);
 }
 
-void CSystemRender::Update (ecs::SystemContext& context, ecs::TimeDelta delta) {
+void CSystemRender::Update (ecs::TimeDelta delta) {
     g_window.Clear();
 
-    for (uint32_t i = 0; i < context.EntityCount(); ++i) {
-        const SComponentPosition& position = *context.ReadComponent<SComponentPosition>(i);
-        const SComponentRender& render = *context.ReadComponent<SComponentRender>(i);
+    for (ecs::SystemEntity entity : SystemIterator()) {
+        const SComponentPosition& position = *entity.ReadComponent<SComponentPosition>();
+        const SComponentRender& render = *entity.ReadComponent<SComponentRender>();
 
         math::Mat4 model;
         model = math::Rotate(model, math::Vec3(1.f, 0.f, 0.f), render.m_timer.TimeElapsed().Seconds());

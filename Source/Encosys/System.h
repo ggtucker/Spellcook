@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include "Encosys.h"
+#include "SystemIter.h"
 #include "SystemType.h"
 
 namespace ecs {
@@ -13,19 +13,19 @@ public:
     virtual ~System () = default;
 
     virtual void Initialize (SystemType& type) = 0;
-    virtual void Update (SystemContext& context, TimeDelta delta) = 0;
+    virtual void Update (TimeDelta delta) = 0;
 
 protected:
     template <typename TComponent> void RequiredComponent (SystemType& type, ComponentUsage usage) {
-        type.RequiredComponent(GetEncosys().GetComponentType<TComponent>(), usage);
+        type.RequiredComponent(GetEncosys().GetComponentTypeId<TComponent>(), usage);
     }
 
     template <typename TComponent> void OptionalComponent (SystemType& type, ComponentUsage usage) {
-        type.OptionalComponent(GetEncosys().GetComponentType<TComponent>(), usage);
+        type.OptionalComponent(GetEncosys().GetComponentTypeId<TComponent>(), usage);
     }
 
     Encosys& GetEncosys () { return *m_encosys; }
-    SystemTypeId GetTypeId () { return m_typeId; }
+    SystemIter SystemIterator () { return SystemIter(*m_encosys, m_typeId); }
 
 private:
     friend class SystemRegistry;

@@ -17,8 +17,7 @@ void Encosys::Initialize () {
 
 void Encosys::Update (TimeDelta delta) {
     for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
-        SystemContext systemContext(*this, m_systemRegistry.GetSystemType(i));
-        m_systemRegistry.GetSystem(i)->Update(systemContext, delta);
+        m_systemRegistry.GetSystem(i)->Update(delta);
     }
 }
 
@@ -141,6 +140,10 @@ uint32_t Encosys::EntityCount () const {
 
 uint32_t Encosys::ActiveEntityCount () const {
     return m_entityActiveCount;
+}
+
+const SystemType& Encosys::GetSystemType (SystemTypeId systemId) const {
+    return m_systemRegistry.GetSystemType(systemId);
 }
 
 void Encosys::IndexSwapEntities (uint32_t lhsIndex, uint32_t rhsIndex) {
