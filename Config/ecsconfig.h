@@ -1,16 +1,12 @@
 #pragma once
 
+#include "Core/CoreDebug.h"
 #include "Core/Fixed.h"
 #include "Game/ComponentPosition.h"
 #include "Game/ComponentVelocity.h"
 #include "Render/ComponentRender.h"
 
-using EncosysComponents = ecs::tmp::TypeList<
-    SComponentPosition,
-    SComponentRender,
-    SComponentVelocity
->;
+#define ENCOSYS_TIME_TYPE_ CFixed
 
-#define ENCOSYS_COMPONENTS EncosysComponents
+#define ENCOSYS_ASSERT_(x) Assert_(x)
 
-#define ENCOSYS_TIME_TYPE CFixed

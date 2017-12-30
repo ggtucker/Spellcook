@@ -12,6 +12,6 @@ void CSystemMovement::Update (ecs::TimeDelta delta) {
     for (ecs::SystemEntity entity : SystemIterator()) {
         const SComponentVelocity& velocity = *entity.ReadComponent<SComponentVelocity>();
         SComponentPosition& position = *entity.WriteComponent<SComponentPosition>();
-        position.m_position += velocity.m_velocity * CFixed::FromFloat(delta);
+        position.m_position += velocity.m_velocity * delta;
     }
 }

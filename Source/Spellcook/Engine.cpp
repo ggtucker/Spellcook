@@ -80,5 +80,5 @@ void CEngine::ProcessInput (const CInputEvent& event) {
 }
 
 void CEngine::Update (CFixed delta) {
-    m_encosys.Update(delta.ToFloat());
+    m_encosys.Update(delta);
 }

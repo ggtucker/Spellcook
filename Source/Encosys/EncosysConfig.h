@@ -4,6 +4,10 @@
 #include <cassert>
 #include <cstdint>
 
+#ifndef ENCOSYS_DISABLE_INCLUDE_ECSCONFIG_H
+#include "ecsconfig.h"
+#endif
+
 #ifndef ENCOSYS_MAX_COMPONENTS_
 #define ENCOSYS_MAX_COMPONENTS_ 64
 #endif
