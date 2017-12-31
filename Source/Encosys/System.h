@@ -30,6 +30,8 @@ protected:
 
     SystemIter SystemIterator () { return SystemIter(*m_encosys, *m_type); }
 
+    SystemEntity GetEntity (ecs::EntityId id) { return SystemEntity(*m_type, m_encosys->Get(id)); }
+
     template <typename TSingleton>
     TSingleton& WriteSingleton () {
         ENCOSYS_ASSERT_(m_type->IsSingletonWriteAllowed(m_encosys->GetSingletonTypeId<TSingleton>()));

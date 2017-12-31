@@ -2,9 +2,6 @@
 
 #include "Core/CoreDebug.h"
 #include "Core/Fixed.h"
-#include "Game/ComponentPosition.h"
-#include "Game/ComponentVelocity.h"
-#include "Render/ComponentRender.h"
 
 #define ENCOSYS_TIME_TYPE_ CFixed
 

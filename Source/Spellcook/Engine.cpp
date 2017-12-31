@@ -1,12 +1,17 @@
 #include "Engine.h"
 
-#include "Game/ComponentPosition.h"
-#include "Game/ComponentVelocity.h"
+#include "Render/ComponentCamera.h"
+#include "Game/ComponentPlayer.h"
 #include "Render/ComponentRender.h"
+#include "Game/ComponentTransform.h"
+#include "Game/ComponentVelocity.h"
 
+#include "Render/SingletonCamera.h"
 #include "GameUI/SingletonInput.h"
 
 #include "Game/SystemMovement.h"
+#include "Game/SystemPlayerController.h"
+#include "GameUI/SystemCamera.h"
 #include "GameUI/SystemInput.h"
 #include "GameUI/SystemRender.h"
 
@@ -24,11 +29,6 @@ void CEngine::RunMainLoop () {
     CTimer engineTimer;
 
     while (g_window.IsOpen()) {
-        CInputEvent event;
-        while (g_window.PollInput(event)) {
-            ProcessInput(event);
-        }
-
         CTime frameTime = engineTimer.Restart();
         accumulatedTime += frameTime;
 
@@ -43,47 +43,55 @@ void CEngine::RunMainLoop () {
 
 void CEngine::Initialize () {
     // Register components
-    m_encosys.RegisterComponent<SComponentPosition>();
-    m_encosys.RegisterComponent<SComponentVelocity>();
+    m_encosys.RegisterComponent<SComponentCamera>();
+    m_encosys.RegisterComponent<SComponentPlayer>();
     m_encosys.RegisterComponent<SComponentRender>();
+    m_encosys.RegisterComponent<SComponentTransform>();
+    m_encosys.RegisterComponent<SComponentVelocity>();
 
     // Register singletons
+    m_encosys.RegisterSingleton<SSingletonCamera>();
     m_encosys.RegisterSingleton<SSingletonInput>();
 
     // Register systems
     m_encosys.RegisterSystem<CSystemInput>();
+    m_encosys.RegisterSystem<CSystemPlayerController>();
     m_encosys.RegisterSystem<CSystemMovement>();
+    m_encosys.RegisterSystem<CSystemCamera>();
     m_encosys.RegisterSystem<CSystemRender>();
 
     // Initialize encosys
     m_encosys.Initialize();
 
     // Manually create the player entity
-    ecs::EntityId player = m_encosys.Create();
-    SComponentPosition& position = m_encosys.AddComponent<SComponentPosition>(player);
-    position.m_position = math::Vec3f(F_4, F_3, F_2);
-    SComponentVelocity& velocity = m_encosys.AddComponent<SComponentVelocity>(player);
-    velocity.m_velocity = math::Vec3f(F_1, F_1, F_1);
-    SComponentRender& render = m_encosys.AddComponent<SComponentRender>(player);
-    render.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
-    render.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
+    ecs::Entity player = m_encosys.Create();
+    {
+        SComponentTransform& transformComponent = player.AddComponent<SComponentTransform>();
+        transformComponent.Position() = math::Vec3f(F_4, F_3, F_2);
+        transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
+        SComponentVelocity& velocityComponent = player.AddComponent<SComponentVelocity>();
+        velocityComponent.m_velocity = math::Vec3f(F_1, F_1, F_1);
+        SComponentRender& renderComponent = player.AddComponent<SComponentRender>();
+        renderComponent.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
+        renderComponent.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
+    }
+
+    // Manually create the camera entity
+    ecs::Entity camera = m_encosys.Create();
+    {
+        SComponentTransform& transformComponent = camera.AddComponent<SComponentTransform>();
+        transformComponent.Position() = math::Vec3f(F_0, F_0, -F_3);
+        transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
+        SComponentCamera& cameraComponent = camera.AddComponent<SComponentCamera>();
+        cameraComponent.m_followTarget = player.GetId();
+        cameraComponent.m_distance = F_0;
+        camera.AddComponent<SComponentPlayer>();
+    }
+    m_encosys.GetSingleton<SSingletonCamera>().m_activeCamera = camera.GetId();
 }
 
 void CEngine::Terminate () {
 
-}
-
-void CEngine::ProcessInput (const CInputEvent& event) {
-    if (event.m_type == EInputEvent::Closed) {
-        g_window.Close();
-    }
-    else {
-        for (CInputHandler* inputHandler : m_inputHandlers) {
-            if (inputHandler->ProcessInput(g_window, event)) {
-                return;
-            }
-        }
-    }
 }
 
 void CEngine::Update (CFixed delta) {

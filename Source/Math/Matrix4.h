@@ -32,11 +32,21 @@ public:
         col[0] = c0; col[1] = c1; col[2] = c2; col[3] = c3;
     }
 
+    template <typename U>
+    CMatrix4T<U> Cast () const {
+        return CMatrix4T<U>{
+            col[0].Cast<U>(),
+            col[1].Cast<U>(),
+            col[2].Cast<U>(),
+            col[3].Cast<U>()
+        };
+    }
+
     void Reset () {
-        col[0][0] = static_cast<T>(1); col[1][0] = 0; col[2][0] = 0; col[3][0] = 0;
-        col[0][1] = 0; col[1][1] = 1; col[2][1] = 0; col[3][1] = 0;
-        col[0][2] = 0; col[1][2] = 0; col[2][2] = 1; col[3][2] = 0;
-        col[0][3] = 0; col[1][3] = 0; col[2][3] = 0; col[3][3] = 1;
+        col[0][0] = static_cast<T>(1); col[1][0] = static_cast<T>(0); col[2][0] = static_cast<T>(0); col[3][0] = static_cast<T>(0);
+        col[0][1] = static_cast<T>(0); col[1][1] = static_cast<T>(1); col[2][1] = static_cast<T>(0); col[3][1] = static_cast<T>(0);
+        col[0][2] = static_cast<T>(0); col[1][2] = static_cast<T>(0); col[2][2] = static_cast<T>(1); col[3][2] = static_cast<T>(0);
+        col[0][3] = static_cast<T>(0); col[1][3] = static_cast<T>(0); col[2][3] = static_cast<T>(0); col[3][3] = static_cast<T>(1);
     }
 
     const T* ValuePtr () const { return &col[0][0]; }
@@ -69,6 +79,15 @@ public:
                 b[3].Dot({ a[0][2], a[1][2], a[2][2], a[3][2] }),
                 b[3].Dot({ a[0][3], a[1][3], a[2][3], a[3][3] })
             }
+        };
+    }
+
+    friend CVector4T<T> operator* (const CMatrix4T& a, const CVector4T<T>& v) {
+        return CVector4T<T>{
+            v.Dot({ a[0][0], a[1][0], a[2][0], a[3][0] }),
+            v.Dot({ a[0][1], a[1][1], a[2][1], a[3][1] }),
+            v.Dot({ a[0][2], a[1][2], a[2][2], a[3][2] }),
+            v.Dot({ a[0][3], a[1][3], a[2][3], a[3][3] })
         };
     }
 
@@ -148,6 +167,19 @@ CMatrix4T<T> Perspective (const T& fov, const T& aspect, const T& near, const T&
             -(static_cast<T>(2) * far * near) / (far - near),
             static_cast<T>(0)
         }
+    };
+}
+
+template <typename T>
+CMatrix4T<T> LookAt (const CVector3T<T>& eye, const CVector3T<T>& target, const CVector3T<T>& up) {
+    const CVector3T<T> f = Normalize(target - eye);
+    const CVector3T<T> r = Normalize(Cross(f, up));
+    const CVector3T<T> u = Cross(r, f);
+    return CMatrix4T<T>{
+        r.x,               r.y,               r.z,               -Dot(r, eye),
+        u.x,               u.y,               u.z,               -Dot(u, eye),
+        -f.x,              -f.y,              -f.z,              -Dot(f, eye),
+        static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(1)
     };
 }
 

@@ -8,11 +8,12 @@
 
 
 CFixed CFixed::Sqrt () const {
+    static const uint32_t c_maxIter = 10;
     Assert_(m_value >= 0);
     // Newton-Raphson Method
     CFixed next = *this / F_2;
     CFixed result = F_0;
-    while (next != result) {
+    for (uint32_t i = 0; next != result && i < c_maxIter; ++i) {
         result = next;
         next = (result + *this / result) / F_2;
     }

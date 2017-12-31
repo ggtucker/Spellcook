@@ -81,11 +81,14 @@ void CWindow::SetActive (bool active) {
 
 bool CWindow::PollInput (CInputEvent& inputEvent) {
     if (m_inputQueue.empty()) {
-        return false;
+        glfwPollEvents();
     }
-    inputEvent = m_inputQueue.back();
-    m_inputQueue.pop();
-    return true;
+    if (!m_inputQueue.empty()) {
+        inputEvent = m_inputQueue.front();
+        m_inputQueue.pop();
+        return true;
+    }
+    return false;
 }
 
 void CWindow::PushInput (const CInputEvent& inputEvent) {
@@ -100,7 +103,14 @@ void CWindow::Clear () {
 
 void CWindow::SwapBuffers () {
     glfwSwapBuffers(m_window);
-    glfwPollEvents();
+}
+
+bool CWindow::IsCursorDisabled () const {
+    return glfwGetInputMode(m_window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+}
+
+void CWindow::SetCursorDisabled (bool disabled) {
+    glfwSetInputMode(m_window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 static void GlfwFramebufferSizeCallback (GLFWwindow* glfwWindow, int width, int height) {

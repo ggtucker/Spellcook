@@ -9,6 +9,7 @@ int main () {
     if (!g_window.Create(windowContext)) {
         return -1;
     }
+    g_window.SetCursorDisabled(true);
     CEngine engine;
     engine.RunMainLoop();
     return 0;

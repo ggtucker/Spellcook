@@ -20,5 +20,4 @@ private:
 
 private:
     ecs::Encosys m_encosys;
-    std::vector<CInputHandler*> m_inputHandlers{};
 };

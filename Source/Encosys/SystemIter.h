@@ -7,26 +7,26 @@ namespace ecs {
 
 class SystemEntity {
 public:
-    SystemEntity (Encosys& encosys, const SystemType& type, Entity entity) :
-        m_encosys{encosys},
+    SystemEntity (const SystemType& type, Entity entity) :
         m_type{type},
         m_entity{entity} {
     }
 
+    bool IsValid () const { return m_entity.IsValid(); }
+
     template <typename TComponent>
     TComponent* WriteComponent () {
-        ENCOSYS_ASSERT_(m_type.IsComponentWriteAllowed(m_encosys.GetComponentTypeId<TComponent>()));
+        ENCOSYS_ASSERT_(m_type.IsComponentWriteAllowed(m_entity.GetComponentTypeId<TComponent>()));
         return m_entity.GetComponent<TComponent>();
     }
 
     template <typename TComponent>
     const TComponent* ReadComponent () const {
-        ENCOSYS_ASSERT_(m_type.IsComponentReadAllowed(m_encosys.GetComponentTypeId<TComponent>()));
+        ENCOSYS_ASSERT_(m_type.IsComponentReadAllowed(m_entity.GetComponentTypeId<TComponent>()));
         return m_entity.GetComponent<TComponent>();
     }
 
 private:
-    Encosys& m_encosys;
     const SystemType& m_type;
     Entity m_entity;
 };
@@ -42,7 +42,7 @@ public:
 
     bool operator== (SystemIterType rhs) { return m_index == rhs.m_index; }
     bool operator!= (SystemIterType rhs) { return m_index != rhs.m_index; }
-    SystemEntity operator* () { return SystemEntity(m_encosys, m_type, m_encosys[m_index]); }
+    SystemEntity operator* () { return SystemEntity(m_type, m_encosys[m_index]); }
     void operator++ () { ++m_index; Next(); }
 
 private:

@@ -2,12 +2,18 @@
 
 #include <iosfwd>
 
+#define F_I_(x) CFixed::FromBits(x << CFixed::c_fractionBits)
+#define F_Deg_(x) (x / F_I_(90))
+#define F_IDeg_(x) (F_I_(x) / F_I_(90))
+
 #define F_2_PI CFixed::FromBits(0x00006488)
 #define F_PI CFixed::FromBits(0x00003244)
 #define F_HALF_PI CFixed::FromBits(0x00001922)
 #define F_QUARTER_PI CFixed::FromBits(0x00000C91)
 
+#define F_0_00024414062 CFixed::FromBits(0x00000001)
 #define F_0_03125 CFixed::FromBits(0x00000080)
+#define F_0_25 CFixed::FromBits(0x00000400)
 #define F_0_5 CFixed::FromBits(0x00000800)
 #define F_1_5 CFixed::FromBits(0x00001800)
 

@@ -33,19 +33,22 @@ private:
 
 class Entity {
 public:
-    Entity (Encosys& encosys, EntityStorage& storage) : m_encosys{encosys}, m_storage{storage} {}
+    Entity (Encosys* encosys, EntityStorage* storage) : m_encosys{encosys}, m_storage{storage} {}
 
-    EntityId                                         GetId              () const { return m_storage.GetId(); }
+    bool                                              IsValid            () const { return m_storage != nullptr; }
+    EntityId                                          GetId              () const { return m_storage->GetId(); }
 
-    bool                                             HasComponentBitset (const ComponentBitset& bitset) const { return m_storage.HasComponentBitset(bitset); }
-    template <typename TComponent> bool              HasComponent       () const { return m_storage.HasComponent(m_encosys.GetComponentTypeId<TComponent>().Id()); }
+    bool                                              HasComponentBitset (const ComponentBitset& bitset) const { return m_storage->HasComponentBitset(bitset); }
+    template <typename TComponent> bool               HasComponent       () const { return m_storage->HasComponent(m_encosys->GetComponentTypeId<TComponent>().Id()); }
 
-    template <typename TComponent> TComponent*       GetComponent       ();
-    template <typename TComponent> const TComponent* GetComponent       () const;
+    template <typename TComponent, typename... TArgs> TComponent& AddComponent (TArgs&&... args) { return m_encosys->AddComponent<TComponent>(GetId(), std::forward<TArgs>(args)...); }
+    template <typename TComponent> TComponent*        GetComponent       ();
+    template <typename TComponent> const TComponent*  GetComponent       () const;
+    template <typename TComponent> ComponentTypeId    GetComponentTypeId () const { return m_encosys->GetComponentTypeId<TComponent>(); }
 
 private:
-    Encosys& m_encosys;
-    EntityStorage& m_storage;
+    Encosys* m_encosys;
+    EntityStorage* m_storage{nullptr};
 };
 
 class Encosys {
@@ -54,8 +57,9 @@ public:
     Encosys () = default;
 
     // Entity members
-    EntityId                                                      Create               (bool active = true);
+    Entity                                                        Create               (bool active = true);
     EntityId                                                      Copy                 (EntityId e, bool active = true);
+    Entity                                                        Get                  (EntityId e);
     void                                                          Destroy              (EntityId e);
     bool                                                          IsValid              (EntityId e) const;
     bool                                                          IsActive             (EntityId e) const;
@@ -87,7 +91,7 @@ public:
 
     // Other members
     template <typename TCallback> void                            ForEach              (TCallback&& callback);
-    Entity                                                        operator[]           (uint32_t index) { return Entity(*this, m_entities[index]); }
+    Entity                                                        operator[]           (uint32_t index) { return Entity(this, &m_entities[index]); }
 
 private:
     friend class Entity;
@@ -117,16 +121,16 @@ TComponent* Entity::GetComponent () {
 template <typename TComponent>
 const TComponent* Entity::GetComponent () const {
     // Retrieve the registered type of the component
-    const ComponentTypeId typeId = m_encosys.GetComponentTypeId<TComponent>();
+    const ComponentTypeId typeId = m_encosys->GetComponentTypeId<TComponent>();
 
     // Return nullptr if this entity does not have this component type
-    if (!m_storage.HasComponent(typeId)) {
+    if (!m_storage->HasComponent(typeId)) {
         return nullptr;
     }
 
     // Retrieve the storage for this component type
-    const auto& storage = m_encosys.m_componentRegistry.GetStorage<TComponent>();
-    return &storage.GetObject(m_storage.GetComponentIndex(typeId));
+    const auto& storage = m_encosys->m_componentRegistry.GetStorage<TComponent>();
+    return &storage.GetObject(m_storage->GetComponentIndex(typeId));
 }
 
 template <typename TComponent>

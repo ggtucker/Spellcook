@@ -7,12 +7,9 @@
 namespace ecs {
 
 void Encosys::Initialize () {
-    // Initialize systems
     for (uint32_t i = 0; i < m_systemRegistry.Count(); ++i) {
         m_systemRegistry.GetSystem(i)->Initialize(m_systemRegistry.GetSystemType(i));
     }
-    // Initialize singletons
-
 }
 
 void Encosys::Update (TimeDelta delta) {
@@ -21,30 +18,32 @@ void Encosys::Update (TimeDelta delta) {
     }
 }
 
-EntityId Encosys::Create (bool active) {
+Entity Encosys::Create (bool active) {
     EntityId id(m_entityIdCounter);
     ++m_entityIdCounter;
 
+    uint32_t& index = m_idToEntity[id];
+
     if (active) {
         if (m_entityActiveCount == EntityCount()) {
-            m_idToEntity[id] = EntityCount();
+            index = EntityCount();
             m_entities.push_back(EntityStorage(id));
         }
         else {
             const EntityStorage& firstInactiveEntity = m_entities[m_entityActiveCount];
             m_idToEntity[firstInactiveEntity.GetId()] = EntityCount();
             m_entities.push_back(firstInactiveEntity);
-            m_idToEntity[id] = m_entityActiveCount;
+            index = m_entityActiveCount;
             m_entities[m_entityActiveCount] = EntityStorage(id);
         }
         ++m_entityActiveCount;
     }
     else {
-        m_idToEntity[id] = EntityCount();
+        index = EntityCount();
         m_entities.push_back(EntityStorage(id));
     }
 
-    return id;
+    return Entity(this, &m_entities[index]);
 }
 
 EntityId Encosys::Copy (EntityId e, bool active) {
@@ -85,6 +84,14 @@ EntityId Encosys::Copy (EntityId e, bool active) {
     }
 
     return id;
+}
+
+Entity Encosys::Get (EntityId e) {
+    auto entityIter = m_idToEntity.find(e);
+    if (entityIter != m_idToEntity.end()) {
+        return Entity(this, &m_entities[entityIter->second]);
+    }
+    return Entity(this, nullptr);
 }
 
 void Encosys::Destroy (EntityId e) {

@@ -43,6 +43,9 @@ public:
     bool IsKeyRepeatEnabled () const { return m_keyRepeatEnabled; }
     void SetKeyRepeatEnabled (bool enabled) { m_keyRepeatEnabled = enabled; }
 
+    bool IsCursorDisabled () const;
+    void SetCursorDisabled (bool disabled);
+
 private:
     GLFWwindow* m_window{nullptr};
     std::queue<CInputEvent> m_inputQueue{};
