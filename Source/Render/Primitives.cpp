@@ -3,7 +3,7 @@
 
 namespace NPrimitives {
 
-void DrawTriangle (const math::Vec3f& position) {
+void DrawTriangle () {
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -22,7 +22,7 @@ void DrawTriangle (const math::Vec3f& position) {
     glDeleteBuffers(1, &VBO);
 }
 
-void DrawRectangle (const math::Vec3f& position) {
+void DrawRectangle () {
     float vertices[] = {
         // positions          // colors           // texture coords
          0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
@@ -30,7 +30,7 @@ void DrawRectangle (const math::Vec3f& position) {
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
         -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
     };
-    uint32_t indices[] = {
+    unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
@@ -63,7 +63,7 @@ void DrawRectangle (const math::Vec3f& position) {
     glDeleteBuffers(1, &EBO);
 }
 
-void DrawCube (const math::Vec3f& position) {
+void DrawCube () {
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,

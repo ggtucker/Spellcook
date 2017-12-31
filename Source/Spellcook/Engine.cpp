@@ -63,31 +63,42 @@ void CEngine::Initialize () {
     // Initialize encosys
     m_encosys.Initialize();
 
+    math::Vec3f cubePositions[] = {
+        math::Vec3f(0,  0,  0),
+        math::Vec3f(2,  5, -15),
+        math::Vec3f(-1, -2, -2),
+        math::Vec3f(-3, -2, -12),
+        math::Vec3f(2, -0, -3),
+        math::Vec3f(-1,  3, -7),
+        math::Vec3f(1, -2, -2),
+        math::Vec3f(1,  2, -2),
+        math::Vec3f(1,  0, -1),
+        math::Vec3f(-1,  1, -1)
+    };
+
     // Manually create the player entity
-    ecs::Entity player = m_encosys.Create();
-    {
-        SComponentTransform& transformComponent = player.AddComponent<SComponentTransform>();
-        transformComponent.Position() = math::Vec3f(F_4, F_3, F_2);
+    for (uint32_t i = 0; i < 10; ++i) {
+        ecs::Entity cube = m_encosys.Create();
+        SComponentTransform& transformComponent = cube.AddComponent<SComponentTransform>();
+        transformComponent.Position() = cubePositions[i];
         transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
-        SComponentVelocity& velocityComponent = player.AddComponent<SComponentVelocity>();
-        velocityComponent.m_velocity = math::Vec3f(F_1, F_1, F_1);
-        SComponentRender& renderComponent = player.AddComponent<SComponentRender>();
+        SComponentVelocity& velocityComponent = cube.AddComponent<SComponentVelocity>();
+        SComponentRender& renderComponent = cube.AddComponent<SComponentRender>();
         renderComponent.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
         renderComponent.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
     }
 
     // Manually create the camera entity
-    ecs::Entity camera = m_encosys.Create();
+    ecs::Entity player = m_encosys.Create();
     {
-        SComponentTransform& transformComponent = camera.AddComponent<SComponentTransform>();
+        SComponentTransform& transformComponent = player.AddComponent<SComponentTransform>();
         transformComponent.Position() = math::Vec3f(F_0, F_0, -F_3);
         transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
-        SComponentCamera& cameraComponent = camera.AddComponent<SComponentCamera>();
-        cameraComponent.m_followTarget = player.GetId();
+        SComponentCamera& cameraComponent = player.AddComponent<SComponentCamera>();
         cameraComponent.m_distance = F_0;
-        camera.AddComponent<SComponentPlayer>();
+        player.AddComponent<SComponentPlayer>();
     }
-    m_encosys.GetSingleton<SSingletonCamera>().m_activeCamera = camera.GetId();
+    m_encosys.GetSingleton<SSingletonCamera>().m_activeCamera = player.GetId();
 }
 
 void CEngine::Terminate () {

@@ -2,6 +2,7 @@
 
 #include "Core/CoreDebug.h"
 #include "Core/CoreTypes.h"
+#include "MathTypes.h"
 #include <ostream>
 
 namespace math {

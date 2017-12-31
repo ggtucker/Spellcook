@@ -22,10 +22,10 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
     if (camera.IsValid()) {
         const SComponentTransform& cameraTransform = *camera.ReadComponent<SComponentTransform>();
         view = math::LookAt(
-            cameraTransform.Position(),
-            cameraTransform.Position() + cameraTransform.Forward(),
-            cameraTransform.Up()
-        ).Cast<float>();
+            cameraTransform.Position().Cast<float>(),
+            cameraTransform.Position().Cast<float>() + cameraTransform.Forward().Cast<float>(),
+            cameraTransform.Up().Cast<float>()
+        );
     }
 
     for (ecs::SystemEntity entity : SystemIterator()) {
@@ -33,6 +33,7 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
         const SComponentRender& render = *entity.ReadComponent<SComponentRender>();
 
         math::Mat4 model;
+        model = math::Translate(model, transform.Position().Cast<float>());
         model = math::Rotate(model, math::Vec3(1.f, 0.f, 0.f), render.m_timer.TimeElapsed().Seconds());
         render.m_shader.SetMat4("uModel", model);
 
@@ -43,7 +44,7 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
         render.m_shader.SetMat4("uProjection", projection);
 
         render.m_shader.Use();
-        NPrimitives::DrawCube(transform.Position());
+        NPrimitives::DrawCube();
     }
 
     g_window.SwapBuffers();
