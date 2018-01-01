@@ -24,7 +24,7 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
         view = math::LookAt(
             cameraTransform.Position().Cast<float>(),
             cameraTransform.Position().Cast<float>() + cameraTransform.Forward().Cast<float>(),
-            cameraTransform.Up().Cast<float>()
+            math::Vec3(0.f, 1.f, 0.f)
         );
     }
 

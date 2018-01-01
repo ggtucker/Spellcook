@@ -76,7 +76,7 @@ void CEngine::Initialize () {
         math::Vec3f(-1,  1, -1)
     };
 
-    // Manually create the player entity
+    // Manually create the cube entities
     for (uint32_t i = 0; i < 10; ++i) {
         ecs::Entity cube = m_encosys.Create();
         SComponentTransform& transformComponent = cube.AddComponent<SComponentTransform>();

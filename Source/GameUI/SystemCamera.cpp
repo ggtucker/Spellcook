@@ -35,6 +35,6 @@ void CSystemCamera::Update (ecs::TimeDelta delta) {
         forward.x = math::Cos(camera.m_yaw) * math::Cos(camera.m_pitch);
         forward.y = math::Sin(camera.m_pitch);
         forward.z = math::Sin(camera.m_yaw) * math::Cos(camera.m_pitch);
-        transform.SetForward(math::Normalize(forward), math::Vec3f(F_0, F_1, F_0));
+        transform.SetForward(forward, math::Vec3f(F_0, F_1, F_0));
     }
 }

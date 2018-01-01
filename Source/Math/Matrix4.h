@@ -178,7 +178,7 @@ CMatrix4T<T> LookAt (const CVector3T<T>& eye, const CVector3T<T>& target, const 
     return CMatrix4T<T>{
         r.x,               r.y,               r.z,               -Dot(r, eye),
         u.x,               u.y,               u.z,               -Dot(u, eye),
-        -f.x,              -f.y,              -f.z,              -Dot(f, eye),
+        f.x,               f.y,               f.z,               -Dot(f, eye),
         static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(1)
     };
 }
