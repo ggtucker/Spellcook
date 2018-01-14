@@ -16,4 +16,6 @@ enum EButton {
     Count
 };
 
+bool IsButtonDown (EButton button);
+
 } // namespace NMouse

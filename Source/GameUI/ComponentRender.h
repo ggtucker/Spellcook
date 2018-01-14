@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Core/Timer.h"
 #include "Render/Texture.h"
-#include "Render/Timer.h"
 #include "Resource/ShaderManager.h"
 
 struct SComponentRender {

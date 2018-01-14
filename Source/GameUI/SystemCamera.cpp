@@ -1,40 +1,25 @@
 #include "SystemCamera.h"
 
 #include "Game/ComponentTransform.h"
-#include "Math/Matrix4.h"
-#include "GameUI/ComponentCamera.h"
-#include "GameUI/SingletonInput.h"
-
-static const CFixed c_sensitivity = F_0_25;
+#include "GameUI/SingletonCamera.h"
 
 void CSystemCamera::Initialize (ecs::SystemType& type) {
-    RequiredComponent<SComponentTransform>(type, ecs::Access::Write);
-    RequiredComponent<SComponentCamera>(type, ecs::Access::Write);
-    RequiredSingleton<SSingletonInput>(type, ecs::Access::Read);
+    OptionalComponent<SComponentTransform>(type, ecs::Access::Read);
+    RequiredSingleton<SSingletonCamera>(type, ecs::Access::Write);
 }
 
 void CSystemCamera::Update (ecs::TimeDelta delta) {
-    const SSingletonInput& singleInput = ReadSingleton<SSingletonInput>();
+    SSingletonCamera& singleCamera = WriteSingleton<SSingletonCamera>();
 
-    for (ecs::SystemEntity entity : SystemIterator()) {
-        SComponentCamera& camera = *entity.WriteComponent<SComponentCamera>();
-        SComponentTransform& transform = *entity.WriteComponent<SComponentTransform>();
+    CCamera& camera = singleCamera.m_activeCamera;
+    ecs::SystemEntity cameraTarget = GetEntity(singleCamera.m_cameraTarget);
 
-        math::Vec2f mouseDelta = singleInput.GetMouseDelta();
-        camera.m_yaw -= F_Deg_(mouseDelta.x * c_sensitivity);
-        camera.m_pitch += F_Deg_(mouseDelta.y * c_sensitivity);
-
-        if (camera.m_pitch > F_IDeg_(88)) {
-            camera.m_pitch = F_IDeg_(88);
+    if (cameraTarget.IsValid()) {
+        if (const SComponentTransform* transform = cameraTarget.ReadComponent<SComponentTransform>()) {
+            const math::Vec3f& position = transform->Position();
+            const math::Vec3f& forward = transform->Forward();
+            camera.SetPosition(math::Vec3(position.x.ToFloat(), position.y.ToFloat(), position.z.ToFloat()));
+            camera.SetForward(math::Vec3(forward.x.ToFloat(), forward.y.ToFloat(), forward.z.ToFloat()));
         }
-        if (camera.m_pitch < -F_IDeg_(88)) {
-            camera.m_pitch = -F_IDeg_(88);
-        }
-
-        math::Vec3f forward;
-        forward.x = math::Cos(camera.m_yaw) * math::Cos(camera.m_pitch);
-        forward.y = math::Sin(camera.m_pitch);
-        forward.z = math::Sin(camera.m_yaw) * math::Cos(camera.m_pitch);
-        transform.SetForward(forward, math::Vec3f(F_0, F_1, F_0));
     }
 }

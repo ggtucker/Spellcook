@@ -34,11 +34,15 @@ public:
     void Close ();
     void SetActive (bool active);
 
+    void Clear ();
+    void SwapBuffers ();
+
     bool PollInput (CInputEvent& inputEvent);
     void PushInput (const CInputEvent& inputEvent);
 
-    void Clear ();
-    void SwapBuffers ();
+    bool IsKeyDown (NKeyboard::EKey key) const;
+    bool IsMouseButtonDown (NMouse::EButton button) const;
+    void GetMousePosition (int32_t& mouseX, int32_t& mouseY) const;
 
     bool IsKeyRepeatEnabled () const { return m_keyRepeatEnabled; }
     void SetKeyRepeatEnabled (bool enabled) { m_keyRepeatEnabled = enabled; }

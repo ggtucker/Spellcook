@@ -1,6 +1,7 @@
 #include "Engine.h"
 
-#include "GameUI/ComponentCamera.h"
+#include "Core/Timer.h"
+
 #include "Game/ComponentPlayer.h"
 #include "GameUI/ComponentRender.h"
 #include "Game/ComponentTransform.h"
@@ -17,7 +18,6 @@
 
 #include "GameUI/InputHandler.h"
 #include "Render/InputEvent.h"
-#include "Render/Timer.h"
 #include "Render/Window.h"
 
 void CEngine::RunMainLoop () {
@@ -43,7 +43,6 @@ void CEngine::RunMainLoop () {
 
 void CEngine::Initialize () {
     // Register components
-    m_encosys.RegisterComponent<SComponentCamera>();
     m_encosys.RegisterComponent<SComponentPlayer>();
     m_encosys.RegisterComponent<SComponentRender>();
     m_encosys.RegisterComponent<SComponentTransform>();
@@ -90,17 +89,15 @@ void CEngine::Initialize () {
         renderComponent.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
     }
 
-    // Manually create the camera entity
+    // Manually create the player entity
     ecs::Entity player = m_encosys.Create();
     {
         SComponentTransform& transformComponent = player.AddComponent<SComponentTransform>();
         transformComponent.Position() = math::Vec3f(F_0, F_0, -F_3);
         transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
-        SComponentCamera& cameraComponent = player.AddComponent<SComponentCamera>();
-        cameraComponent.m_distance = F_0;
         player.AddComponent<SComponentPlayer>();
     }
-    m_encosys.GetSingleton<SSingletonCamera>().m_activeCamera = player.GetId();
+    m_encosys.GetSingleton<SSingletonCamera>().m_cameraTarget = player.GetId();
 }
 
 void CEngine::Terminate () {

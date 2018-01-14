@@ -45,15 +45,24 @@ workspace "Spellcook"
 
     filter {}
 
-project "Spellcook"
+project "Client"
     kind "ConsoleApp"
     language "C++"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
     links { "Core", "Encosys", "Game", "GameUI", "Math", "Resource" }
-    files { "Source/Spellcook/**.h", "Source/Spellcook/**.cpp" }
+    files { "Source/Client/**.h", "Source/Client/**.cpp" }
     UseRenderLib()
+
+project "Server"
+    kind "ConsoleApp"
+    language "C++"
+    location "build/"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs { "Source" }
+    links { "Core", "Encosys", "Game", "Math" }
+    files { "Source/Server/**.h", "Source/Server/**.cpp" }
 
 project "Game"
     kind "StaticLib"
@@ -79,7 +88,7 @@ project "Render"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source", "Libraries/glad/Include", "Libraries/stb/Include" }
-	dependson { "Core" }
+	dependson { "Core", "Math" }
     files { "Source/Render/**.h", "Source/Render/**.cpp", "Libraries/glad/Source/glad.c", "Libraries/stb/Source/stb_image.cpp" }
     IncludeGlfw()
 

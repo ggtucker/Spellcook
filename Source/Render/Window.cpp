@@ -9,7 +9,9 @@ CWindow g_window; // define global window
 DefineLogStatic_(Window, ELogCategory::Render, "Window.txt", 0);
 
 static NKeyboard::EKey GlfwKeyCodeToKeyboardKey (int key);
+static int KeyboardKeyToGlfwKeyCode (NKeyboard::EKey key);
 static NMouse::EButton GlfwMouseCodeToMouseButton (int button);
+static int MouseButtonToGlfwMouseCode (NMouse::EButton button);
 
 static void GlfwFramebufferSizeCallback (GLFWwindow* window, int width, int height);
 static void GlfwKeyCallback (GLFWwindow* window, int key, int scanCode, int action, int mode);
@@ -93,6 +95,21 @@ bool CWindow::PollInput (CInputEvent& inputEvent) {
 
 void CWindow::PushInput (const CInputEvent& inputEvent) {
     m_inputQueue.push(inputEvent);
+}
+
+bool CWindow::IsKeyDown (NKeyboard::EKey key) const {
+    return glfwGetKey(m_window, KeyboardKeyToGlfwKeyCode(key)) == GLFW_PRESS;
+}
+
+bool CWindow::IsMouseButtonDown (NMouse::EButton button) const {
+    return glfwGetMouseButton(m_window, MouseButtonToGlfwMouseCode(button)) == GLFW_PRESS;
+}
+
+void CWindow::GetMousePosition (int32_t& mouseX, int32_t& mouseY) const {
+    double x, y;
+    glfwGetCursorPos(m_window, &x, &y);
+    mouseX = static_cast<int32_t>(x);
+    mouseY = static_cast<int32_t>(y);
 }
 
 void CWindow::Clear () {
@@ -327,6 +344,130 @@ static NKeyboard::EKey GlfwKeyCodeToKeyboardKey (int key) {
     return NKeyboard::Unknown;
 }
 
+static int KeyboardKeyToGlfwKeyCode (NKeyboard::EKey key) {
+    switch (key) {
+        case NKeyboard::A:              return GLFW_KEY_A;
+        case NKeyboard::B:              return GLFW_KEY_B;
+        case NKeyboard::C:              return GLFW_KEY_C;
+        case NKeyboard::D:              return GLFW_KEY_D;
+        case NKeyboard::E:              return GLFW_KEY_E;
+        case NKeyboard::F:              return GLFW_KEY_F;
+        case NKeyboard::G:              return GLFW_KEY_G;
+        case NKeyboard::H:              return GLFW_KEY_H;
+        case NKeyboard::I:              return GLFW_KEY_I;
+        case NKeyboard::J:              return GLFW_KEY_J;
+        case NKeyboard::K:              return GLFW_KEY_K;
+        case NKeyboard::L:              return GLFW_KEY_L;
+        case NKeyboard::M:              return GLFW_KEY_M;
+        case NKeyboard::N:              return GLFW_KEY_N;
+        case NKeyboard::O:              return GLFW_KEY_O;
+        case NKeyboard::P:              return GLFW_KEY_P;
+        case NKeyboard::Q:              return GLFW_KEY_Q;
+        case NKeyboard::R:              return GLFW_KEY_R;
+        case NKeyboard::S:              return GLFW_KEY_S;
+        case NKeyboard::T:              return GLFW_KEY_T;
+        case NKeyboard::U:              return GLFW_KEY_U;
+        case NKeyboard::V:              return GLFW_KEY_V;
+        case NKeyboard::W:              return GLFW_KEY_W;
+        case NKeyboard::X:              return GLFW_KEY_X;
+        case NKeyboard::Y:              return GLFW_KEY_Y;
+        case NKeyboard::Z:              return GLFW_KEY_Z;
+        case NKeyboard::Num0:           return GLFW_KEY_0;
+        case NKeyboard::Num1:           return GLFW_KEY_1;
+        case NKeyboard::Num2:           return GLFW_KEY_2;
+        case NKeyboard::Num3:           return GLFW_KEY_3;
+        case NKeyboard::Num4:           return GLFW_KEY_4;
+        case NKeyboard::Num5:           return GLFW_KEY_5;
+        case NKeyboard::Num6:           return GLFW_KEY_6;
+        case NKeyboard::Num7:           return GLFW_KEY_7;
+        case NKeyboard::Num8:           return GLFW_KEY_8;
+        case NKeyboard::Num9:           return GLFW_KEY_9;
+        case NKeyboard::Escape:         return GLFW_KEY_ESCAPE;
+        case NKeyboard::LControl:       return GLFW_KEY_LEFT_CONTROL;
+        case NKeyboard::LShift:         return GLFW_KEY_LEFT_SHIFT;
+        case NKeyboard::LAlt:           return GLFW_KEY_LEFT_ALT;
+        case NKeyboard::LSystem:        return GLFW_KEY_LEFT_SUPER;
+        case NKeyboard::RControl:       return GLFW_KEY_RIGHT_CONTROL;
+        case NKeyboard::RShift:         return GLFW_KEY_RIGHT_SHIFT;
+        case NKeyboard::RAlt:           return GLFW_KEY_RIGHT_ALT;
+        case NKeyboard::RSystem:        return GLFW_KEY_RIGHT_SUPER;
+        case NKeyboard::Menu:           return GLFW_KEY_MENU;
+        case NKeyboard::LBracket:       return GLFW_KEY_LEFT_BRACKET;
+        case NKeyboard::RBracket:       return GLFW_KEY_RIGHT_BRACKET;
+        case NKeyboard::Semicolon:      return GLFW_KEY_SEMICOLON;
+        case NKeyboard::Comma:          return GLFW_KEY_COMMA;
+        case NKeyboard::Period:         return GLFW_KEY_PERIOD;
+        case NKeyboard::Apostrophe:     return GLFW_KEY_APOSTROPHE;
+        case NKeyboard::Slash:          return GLFW_KEY_SLASH;
+        case NKeyboard::Backslash:      return GLFW_KEY_BACKSLASH;
+        case NKeyboard::Grave:          return GLFW_KEY_GRAVE_ACCENT;
+        case NKeyboard::Equal:          return GLFW_KEY_EQUAL;
+        case NKeyboard::Dash:           return GLFW_KEY_MINUS;
+        case NKeyboard::Space:          return GLFW_KEY_SPACE;
+        case NKeyboard::Enter:          return GLFW_KEY_ENTER;
+        case NKeyboard::Backspace:      return GLFW_KEY_BACKSPACE;
+        case NKeyboard::Tab:            return GLFW_KEY_TAB;
+        case NKeyboard::PageUp:         return GLFW_KEY_PAGE_UP;
+        case NKeyboard::PageDown:       return GLFW_KEY_PAGE_DOWN;
+        case NKeyboard::End:            return GLFW_KEY_END;
+        case NKeyboard::Home:           return GLFW_KEY_HOME;
+        case NKeyboard::Insert:         return GLFW_KEY_INSERT;
+        case NKeyboard::Delete:         return GLFW_KEY_DELETE;
+        case NKeyboard::Left:           return GLFW_KEY_LEFT;
+        case NKeyboard::Right:          return GLFW_KEY_RIGHT;
+        case NKeyboard::Up:             return GLFW_KEY_UP;
+        case NKeyboard::Down:           return GLFW_KEY_DOWN;
+        case NKeyboard::NumpadLock:     return GLFW_KEY_NUM_LOCK;
+        case NKeyboard::NumpadAdd:      return GLFW_KEY_KP_ADD;
+        case NKeyboard::NumpadSubtract: return GLFW_KEY_KP_SUBTRACT;
+        case NKeyboard::NumpadMultiply: return GLFW_KEY_KP_MULTIPLY;
+        case NKeyboard::NumpadDivide:   return GLFW_KEY_KP_DIVIDE;
+        case NKeyboard::NumpadDecimal:  return GLFW_KEY_KP_DECIMAL;
+        case NKeyboard::NumpadEnter:    return GLFW_KEY_KP_ENTER;
+        case NKeyboard::NumpadEqual:    return GLFW_KEY_KP_EQUAL;
+        case NKeyboard::Numpad0:        return GLFW_KEY_KP_0;
+        case NKeyboard::Numpad1:        return GLFW_KEY_KP_1;
+        case NKeyboard::Numpad2:        return GLFW_KEY_KP_2;
+        case NKeyboard::Numpad3:        return GLFW_KEY_KP_3;
+        case NKeyboard::Numpad4:        return GLFW_KEY_KP_4;
+        case NKeyboard::Numpad5:        return GLFW_KEY_KP_5;
+        case NKeyboard::Numpad6:        return GLFW_KEY_KP_6;
+        case NKeyboard::Numpad7:        return GLFW_KEY_KP_7;
+        case NKeyboard::Numpad8:        return GLFW_KEY_KP_8;
+        case NKeyboard::Numpad9:        return GLFW_KEY_KP_9;
+        case NKeyboard::PrintScreen:    return GLFW_KEY_PRINT_SCREEN;
+        case NKeyboard::CapsLock:       return GLFW_KEY_CAPS_LOCK;
+        case NKeyboard::ScrollLock:     return GLFW_KEY_SCROLL_LOCK;
+        case NKeyboard::Pause:          return GLFW_KEY_PAUSE;
+        case NKeyboard::F1:             return GLFW_KEY_F1;
+        case NKeyboard::F2:             return GLFW_KEY_F2;
+        case NKeyboard::F3:             return GLFW_KEY_F3;
+        case NKeyboard::F4:             return GLFW_KEY_F4;
+        case NKeyboard::F5:             return GLFW_KEY_F5;
+        case NKeyboard::F6:             return GLFW_KEY_F6;
+        case NKeyboard::F7:             return GLFW_KEY_F7;
+        case NKeyboard::F8:             return GLFW_KEY_F8;
+        case NKeyboard::F9:             return GLFW_KEY_F9;
+        case NKeyboard::F10:            return GLFW_KEY_F10;
+        case NKeyboard::F11:            return GLFW_KEY_F11;
+        case NKeyboard::F12:            return GLFW_KEY_F12;
+        case NKeyboard::F13:            return GLFW_KEY_F13;
+        case NKeyboard::F14:            return GLFW_KEY_F14;
+        case NKeyboard::F15:            return GLFW_KEY_F15;
+        case NKeyboard::F16:            return GLFW_KEY_F16;
+        case NKeyboard::F17:            return GLFW_KEY_F17;
+        case NKeyboard::F18:            return GLFW_KEY_F18;
+        case NKeyboard::F19:            return GLFW_KEY_F19;
+        case NKeyboard::F20:            return GLFW_KEY_F20;
+        case NKeyboard::F21:            return GLFW_KEY_F21;
+        case NKeyboard::F22:            return GLFW_KEY_F22;
+        case NKeyboard::F23:            return GLFW_KEY_F23;
+        case NKeyboard::F24:            return GLFW_KEY_F24;
+        case NKeyboard::F25:            return GLFW_KEY_F25;
+    }
+    return GLFW_KEY_UNKNOWN;
+}
+
 static NMouse::EButton GlfwMouseCodeToMouseButton (int button) {
     switch (button) {
         case GLFW_MOUSE_BUTTON_1: return NMouse::Left;
@@ -337,6 +478,20 @@ static NMouse::EButton GlfwMouseCodeToMouseButton (int button) {
         case GLFW_MOUSE_BUTTON_6: return NMouse::Extra3;
         case GLFW_MOUSE_BUTTON_7: return NMouse::Extra4;
         case GLFW_MOUSE_BUTTON_8: return NMouse::Extra5;
+    }
+    return NMouse::Unknown;
+}
+
+static int MouseButtonToGlfwMouseCode (NMouse::EButton button) {
+    switch (button) {
+        case NMouse::Left:   return GLFW_MOUSE_BUTTON_1;
+        case NMouse::Right:  return GLFW_MOUSE_BUTTON_2;
+        case NMouse::Middle: return GLFW_MOUSE_BUTTON_3;
+        case NMouse::Extra1: return GLFW_MOUSE_BUTTON_4;
+        case NMouse::Extra2: return GLFW_MOUSE_BUTTON_5;
+        case NMouse::Extra3: return GLFW_MOUSE_BUTTON_6;
+        case NMouse::Extra4: return GLFW_MOUSE_BUTTON_7;
+        case NMouse::Extra5: return GLFW_MOUSE_BUTTON_8;
     }
     return NMouse::Unknown;
 }

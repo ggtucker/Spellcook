@@ -47,10 +47,6 @@ void OnMouseReleased (SSingletonInput& input, const CInputEvent::SMouseButtonEve
 
 }
 
-void OnMouseMoved (SSingletonInput& input, const CInputEvent::SMouseMoveEvent& event) {
-    input.SetMousePosition({event.m_x, event.m_y});
-}
-
 void OnMouseEntered (SSingletonInput& input) {
 
 }
@@ -67,6 +63,10 @@ void CSystemInput::Initialize (ecs::SystemType& type) {
 void CSystemInput::Update (ecs::TimeDelta delta) {
     SSingletonInput& singleInput = WriteSingleton<SSingletonInput>();
     singleInput.Reset();
+
+    int32_t mouseX, mouseY;
+    g_window.GetMousePosition(mouseX, mouseY);
+    singleInput.SetMousePosition({mouseX, mouseY});
 
     CInputEvent event;
     while (g_window.PollInput(event)) {
@@ -86,7 +86,6 @@ void CSystemInput::Update (ecs::TimeDelta delta) {
                 case EInputEvent::MouseScrolled: OnMouseScrolled(singleInput, event.m_mouseScroll); break;
                 case EInputEvent::MousePressed:  OnMousePressed(singleInput, event.m_mouseButton);  break;
                 case EInputEvent::MouseReleased: OnMouseReleased(singleInput, event.m_mouseButton); break;
-                case EInputEvent::MouseMoved:    OnMouseMoved(singleInput, event.m_mouseMove);      break;
                 case EInputEvent::MouseEntered:  OnMouseEntered(singleInput);                       break;
                 case EInputEvent::MouseLeft:     OnMouseLeft(singleInput);                          break;
             }

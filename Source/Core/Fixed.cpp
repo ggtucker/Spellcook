@@ -6,6 +6,7 @@
 #include <ostream>
 #include <sstream>
 
+const float CFixedAngle::c_floatHalfPi = 1.570796371f;
 
 CFixed CFixed::Sqrt () const {
     static const uint32_t c_maxIter = 10;
