@@ -2,7 +2,7 @@
 
 #include "Game/ComponentTransform.h"
 #include "Math/Matrix4.h"
-#include "Render/ComponentCamera.h"
+#include "GameUI/ComponentCamera.h"
 #include "GameUI/SingletonInput.h"
 
 static const CFixed c_sensitivity = F_0_25;

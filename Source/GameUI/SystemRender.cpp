@@ -2,8 +2,8 @@
 
 #include "Game/ComponentTransform.h"
 #include "Math/Matrix4.h"
-#include "Render/ComponentRender.h"
-#include "Render/SingletonCamera.h"
+#include "GameUI/ComponentRender.h"
+#include "GameUI/SingletonCamera.h"
 #include "Render/Primitives.h"
 #include "Render/Window.h"
 
@@ -32,18 +32,21 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
         const SComponentTransform& transform = *entity.ReadComponent<SComponentTransform>();
         const SComponentRender& render = *entity.ReadComponent<SComponentRender>();
 
-        math::Mat4 model;
-        model = math::Translate(model, transform.Position().Cast<float>());
-        model = math::Rotate(model, math::Vec3(1.f, 0.f, 0.f), render.m_timer.TimeElapsed().Seconds());
-        render.m_shader.SetMat4("uModel", model);
+        if (CShader* shader = render.m_shader.Deref()) {
+            math::Mat4 model;
+            model = math::Translate(model, transform.Position().Cast<float>());
+            model = math::Rotate(model, math::Vec3(1.f, 0.f, 0.f), render.m_timer.TimeElapsed().Seconds());
+            shader->SetMat4("uModel", model);
 
-        render.m_shader.SetMat4("uView", view);
+            shader->SetMat4("uView", view);
 
-        math::Mat4 projection;
-        projection = math::Perspective(0.78539f, 800.f / 600.f, 0.1f, 100.f);
-        render.m_shader.SetMat4("uProjection", projection);
+            math::Mat4 projection;
+            projection = math::Perspective(0.78539f, 800.f / 600.f, 0.1f, 100.f);
+            shader->SetMat4("uProjection", projection);
 
-        render.m_shader.Use();
+            shader->Use();
+        }
+        
         NPrimitives::DrawCube();
     }
 

@@ -2,7 +2,7 @@
 
 #include "SingletonInput.h"
 #include "GameUI/InputHandler.h"
-#include "Render/SingletonCamera.h"
+#include "GameUI/SingletonCamera.h"
 #include "Render/Window.h"
 
 void OnKeyPressed (SSingletonInput& input, const CInputEvent::SKeyEvent& event) {

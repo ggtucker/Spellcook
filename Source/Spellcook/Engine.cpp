@@ -1,12 +1,12 @@
 #include "Engine.h"
 
-#include "Render/ComponentCamera.h"
+#include "GameUI/ComponentCamera.h"
 #include "Game/ComponentPlayer.h"
-#include "Render/ComponentRender.h"
+#include "GameUI/ComponentRender.h"
 #include "Game/ComponentTransform.h"
 #include "Game/ComponentVelocity.h"
 
-#include "Render/SingletonCamera.h"
+#include "GameUI/SingletonCamera.h"
 #include "GameUI/SingletonInput.h"
 
 #include "Game/SystemMovement.h"
@@ -76,6 +76,8 @@ void CEngine::Initialize () {
         math::Vec3f(-1,  1, -1)
     };
 
+    CShaderTag shaderTag = m_resource.Shader().Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
+
     // Manually create the cube entities
     for (uint32_t i = 0; i < 10; ++i) {
         ecs::Entity cube = m_encosys.Create();
@@ -84,7 +86,7 @@ void CEngine::Initialize () {
         transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
         SComponentVelocity& velocityComponent = cube.AddComponent<SComponentVelocity>();
         SComponentRender& renderComponent = cube.AddComponent<SComponentRender>();
-        renderComponent.m_shader.Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
+        renderComponent.m_shader = shaderTag;
         renderComponent.m_texture.Create("..\\Bin\\Textures\\Geoff.png");
     }
 
