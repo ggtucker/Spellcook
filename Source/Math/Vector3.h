@@ -80,5 +80,6 @@ CVector3T<T> Cross (const CVector3T<T>& a, const CVector3T<T>& b) { return a.Cro
 
 using Vec3 = CVector3T<float>;
 using Vec3f = CVector3T<CFixed>;
+using Vec3i = CVector3T<int32_t>;
 
 } // namespace math

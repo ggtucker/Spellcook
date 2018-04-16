@@ -3,7 +3,7 @@
 #include <bitset>
 #include "Core/Fixed.h"
 #include "Math/Vector2.h"
-#include "GameUI/Hotkey.h"
+#include "GameRender/Hotkey.h"
 #include "Render/InputEvent.h"
 
 class CInputHandler;

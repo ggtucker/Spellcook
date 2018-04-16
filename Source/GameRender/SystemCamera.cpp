@@ -1,7 +1,7 @@
 #include "SystemCamera.h"
 
 #include "Game/ComponentTransform.h"
-#include "GameUI/SingletonCamera.h"
+#include "GameRender/SingletonCamera.h"
 
 void CSystemCamera::Initialize (ecs::SystemType& type) {
     OptionalComponent<SComponentTransform>(type, ecs::Access::Read);

@@ -3,20 +3,21 @@
 #include "Core/Timer.h"
 
 #include "Game/ComponentPlayer.h"
-#include "GameUI/ComponentRender.h"
+#include "GameRender/ComponentRender.h"
 #include "Game/ComponentTransform.h"
 #include "Game/ComponentVelocity.h"
 
-#include "GameUI/SingletonCamera.h"
-#include "GameUI/SingletonInput.h"
+#include "Game/SingletonWorld.h"
+#include "GameRender/SingletonCamera.h"
+#include "GameRender/SingletonInput.h"
 
 #include "Game/SystemMovement.h"
 #include "Game/SystemPlayerController.h"
-#include "GameUI/SystemCamera.h"
-#include "GameUI/SystemInput.h"
-#include "GameUI/SystemRender.h"
+#include "GameRender/SystemCamera.h"
+#include "GameRender/SystemInput.h"
+#include "GameRender/SystemRender.h"
 
-#include "GameUI/InputHandler.h"
+#include "GameRender/InputHandler.h"
 #include "Render/InputEvent.h"
 #include "Render/Window.h"
 
@@ -49,6 +50,7 @@ void CEngine::Initialize () {
     m_encosys.RegisterComponent<SComponentVelocity>();
 
     // Register singletons
+    m_encosys.RegisterSingleton<SSingletonWorld>();
     m_encosys.RegisterSingleton<SSingletonCamera>();
     m_encosys.RegisterSingleton<SSingletonInput>();
 

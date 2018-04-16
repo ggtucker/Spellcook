@@ -1,11 +1,16 @@
 #pragma once
 
-#include "Core/Timer.h"
 #include "Render/Texture.h"
+#include "Render/Mesh.h"
 #include "Resource/ShaderManager.h"
 
+enum class ERenderType {
+    Mesh
+};
+
 struct SComponentRender {
+    ERenderType m_type;
     CShaderTag m_shader;
     CTexture m_texture;
-    CTimer m_timer;
+    CMesh m_mesh;
 };

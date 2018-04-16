@@ -2,7 +2,7 @@
 
 #include "Game/ComponentPlayer.h"
 #include "Game/ComponentTransform.h"
-#include "GameUI/SingletonInput.h"
+#include "GameRender/SingletonInput.h"
 #include "Math/Matrix4.h"
 
 static const CFixed c_movementSpeed = F_0_5;

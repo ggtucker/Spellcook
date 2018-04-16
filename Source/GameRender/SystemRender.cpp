@@ -2,8 +2,8 @@
 
 #include "Game/ComponentTransform.h"
 #include "Math/Matrix4.h"
-#include "GameUI/ComponentRender.h"
-#include "GameUI/SingletonCamera.h"
+#include "GameRender/ComponentRender.h"
+#include "GameRender/SingletonCamera.h"
 #include "Render/Primitives.h"
 #include "Render/Window.h"
 
@@ -30,7 +30,6 @@ void CSystemRender::Update (ecs::TimeDelta delta) {
 
             math::Mat4 model;
             model = math::Translate(model, transform.Position().Cast<float>());
-            model = math::Rotate(model, math::Vec3(1.f, 0.f, 0.f), render.m_timer.TimeElapsed().Seconds());
             shader->SetMat4("uModel", model);
 
             shader->Use();

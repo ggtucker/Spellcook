@@ -51,7 +51,7 @@ project "Client"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-    links { "Core", "Encosys", "Game", "GameUI", "Math", "Resource" }
+    links { "Core", "Encosys", "Game", "GameRender", "Math", "Resource" }
     files { "Source/Client/**.h", "Source/Client/**.cpp" }
     UseRenderLib()
 
@@ -70,17 +70,17 @@ project "Game"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson { "Core", "Math" }
+    dependson { "Core", "Math" }
     files { "Source/Game/**.h", "Source/Game/**.cpp" }
 
-project "GameUI"
+project "GameRender"
     kind "StaticLib"
     language "C++"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson { "Core", "Math", "Game", "Render" }
-    files { "Source/GameUI/**.h", "Source/GameUI/**.cpp" }
+    dependson { "Core", "Math", "Game", "Render" }
+    files { "Source/GameRender/**.h", "Source/GameRender/**.cpp" }
 
 project "Render"
     kind "StaticLib"
@@ -88,7 +88,7 @@ project "Render"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source", "Libraries/glad/Include", "Libraries/stb/Include" }
-	dependson { "Core", "Math" }
+    dependson { "Core", "Math" }
     files { "Source/Render/**.h", "Source/Render/**.cpp", "Libraries/glad/Source/glad.c", "Libraries/stb/Source/stb_image.cpp" }
     IncludeGlfw()
 
@@ -98,7 +98,7 @@ project "Resource"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson { "Core", "Game", "Render" }
+    dependson { "Core", "Game", "Render" }
     files { "Source/Resource/**.h", "Source/Resource/**.cpp" }
 
 project "Math"
@@ -107,7 +107,7 @@ project "Math"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson { "Core" }
+    dependson { "Core" }
     files { "Source/Math/**.h", "Source/Math/**.cpp" }
 
 project "Core"
@@ -116,7 +116,7 @@ project "Core"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson { }
+    dependson { }
     files { "Source/Core/**.h", "Source/Core/**.cpp" }
 
 project "Encosys"
@@ -125,5 +125,5 @@ project "Encosys"
     location "build/"
     targetdir "build/%{cfg.buildcfg}"
     includedirs { "Source" }
-	dependson {  }
+    dependson {  }
     files { "Source/Encosys/**.h", "Source/Encosys/**.cpp" }

@@ -83,5 +83,6 @@ CVector4T<T> Normalize (const CVector4T<T>& a) { CVector4T<T> b = a; b.Normalize
 
 using Vec4 = CVector4T<float>;
 using Vec4f = CVector4T<CFixed>;
+using Vec4i = CVector4T<int32_t>;
 
 } // namespace math
