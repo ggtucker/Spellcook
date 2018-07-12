@@ -66,7 +66,7 @@ void CSystemInput::Update (ecs::TimeDelta delta) {
 
     int32_t mouseX, mouseY;
     g_window.GetMousePosition(mouseX, mouseY);
-    singleInput.SetMousePosition({mouseX, mouseY});
+    singleInput.SetMousePosition({(float)mouseX, (float)mouseY});
 
     CInputEvent event;
     while (g_window.PollInput(event)) {

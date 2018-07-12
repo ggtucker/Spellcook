@@ -5,8 +5,9 @@
 #include "GameRender/SingletonInput.h"
 #include "Math/Matrix4.h"
 
-static const CFixed c_movementSpeed = F_0_5;
-static const CFixed c_turnSensitivity = F_0_25;
+static const float c_movementSpeed = 0.5f;
+static const float c_turnSensitivity = 0.25f;
+static constexpr float c_maxPitchRadians = math::DegreesToRadians(88);
 
 void CSystemPlayerController::Initialize (ecs::SystemType& type) {
     RequiredComponent<SComponentPlayer>(type, ecs::Access::Read);
@@ -31,22 +32,22 @@ void CSystemPlayerController::Update (ecs::TimeDelta delta) {
             transform.Position() -= c_movementSpeed * transform.Right();
         }
 
-        math::Vec2f mouseDelta = singleInput.GetMouseDelta();
-        CFixed yaw = transform.GetYaw() - FA_Deg_(mouseDelta.x * c_turnSensitivity);
-        CFixed pitch = transform.GetPitch() + FA_Deg_(mouseDelta.y * c_turnSensitivity);
+        math::Vec2 mouseDelta = singleInput.GetMouseDelta();
+        float yaw = transform.GetYaw() - math::DegreesToRadians(mouseDelta.x * c_turnSensitivity);
+        float pitch = transform.GetPitch() + math::DegreesToRadians(mouseDelta.y * c_turnSensitivity);
 
-        if (pitch > FA_Deg_(88)) {
-            pitch = FA_Deg_(88);
+        if (pitch > c_maxPitchRadians) {
+            pitch = c_maxPitchRadians;
         }
-        else if (pitch < -FA_Deg_(88)) {
-            pitch = -FA_Deg_(88);
+        else if (pitch < -c_maxPitchRadians) {
+            pitch = -c_maxPitchRadians;
         }
 
-        math::Vec3f forward;
+        math::Vec3 forward;
         forward.x = math::Cos(yaw) * math::Cos(pitch);
         forward.y = math::Sin(pitch);
         forward.z = math::Sin(yaw) * math::Cos(pitch);
-        transform.SetForward(forward, math::Vec3f(F_0, F_1, F_0));
+        transform.SetForward(forward, math::Vec3(0.f, 1.f, 0.f));
         transform.SetYaw(yaw);
         transform.SetPitch(pitch);
     }

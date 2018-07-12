@@ -1,4 +1,7 @@
 #include "MathTypes.h"
-#include <cmath>
+
+namespace math {
 
 float Sqrt (float value) { return sqrt(value); }
+
+} // namespace math

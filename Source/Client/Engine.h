@@ -16,7 +16,7 @@ private:
     void Initialize ();
     void Terminate ();
 
-    void Update (CFixed delta);
+    void Update (float delta);
 
 private:
     ecs::Encosys m_encosys;

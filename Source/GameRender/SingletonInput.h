@@ -14,15 +14,15 @@ struct SSingletonInput {
     bool IsHotkeyReleased (NHotkey::EHotkey hotkey) const { return m_hotkeysReleased.test(hotkey); }
 
     // Mouse state
-    CFixed GetMouseX () const { return m_mousePosition.x; }
-    CFixed GetMouseY () const { return m_mousePosition.y; }
-    math::Vec2f GetMousePosition () const { return m_mousePosition; }
-    math::Vec2f GetMouseDelta () const { return m_mousePosition - m_lastMousePosition; }
+    float GetMouseX () const { return m_mousePosition.x; }
+    float GetMouseY () const { return m_mousePosition.y; }
+    math::Vec2 GetMousePosition () const { return m_mousePosition; }
+    math::Vec2 GetMouseDelta () const { return m_mousePosition - m_lastMousePosition; }
 
     // Mutators
     void SetHotkeyPressed (NHotkey::EHotkey hotkey) { m_hotkeysPressed.set(hotkey); }
     void SetHotkeyReleased (NHotkey::EHotkey hotkey) { m_hotkeysPressed.set(hotkey, false); m_hotkeysReleased.set(hotkey); }
-    void SetMousePosition (math::Vec2f mousePosition) {
+    void SetMousePosition (math::Vec2 mousePosition) {
         if (m_firstMouseUpdate) {
             m_lastMousePosition = mousePosition;
             m_firstMouseUpdate = false;
@@ -48,8 +48,8 @@ private:
 
     // Mouse state
     bool m_firstMouseUpdate{true};
-    math::Vec2f m_lastMousePosition{};
-    math::Vec2f m_mousePosition{};
+    math::Vec2 m_lastMousePosition{};
+    math::Vec2 m_mousePosition{};
 
     // Input processing
     std::vector<CInputHandler*> m_inputHandlers{};

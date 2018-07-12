@@ -24,8 +24,8 @@
 void CEngine::RunMainLoop () {
     Initialize();
 
-    const CFixed c_fixedTimestep = F_0_03125;
-    const CTime c_timestep = CTime::Seconds(c_fixedTimestep.ToFloat());
+    const float c_fixedTimestep = 0.03125f;
+    const CTime c_timestep = CTime::Seconds(c_fixedTimestep);
     CTime accumulatedTime;
     CTimer engineTimer;
 
@@ -64,17 +64,17 @@ void CEngine::Initialize () {
     // Initialize encosys
     m_encosys.Initialize();
 
-    math::Vec3f cubePositions[] = {
-        math::Vec3f(0,  0,  0),
-        math::Vec3f(2,  5, -15),
-        math::Vec3f(-1, -2, -2),
-        math::Vec3f(-3, -2, -12),
-        math::Vec3f(2, -0, -3),
-        math::Vec3f(-1,  3, -7),
-        math::Vec3f(1, -2, -2),
-        math::Vec3f(1,  2, -2),
-        math::Vec3f(1,  0, -1),
-        math::Vec3f(-1,  1, -1)
+    math::Vec3 cubePositions[] = {
+        math::Vec3(0,  0,  0),
+        math::Vec3(2,  5, -15),
+        math::Vec3(-1, -2, -2),
+        math::Vec3(-3, -2, -12),
+        math::Vec3(2, -0, -3),
+        math::Vec3(-1,  3, -7),
+        math::Vec3(1, -2, -2),
+        math::Vec3(1,  2, -2),
+        math::Vec3(1,  0, -1),
+        math::Vec3(-1,  1, -1)
     };
 
     CShaderTag shaderTag = m_resource.Shader().Create("..\\Bin\\Shaders\\DefaultShader.vs", "..\\Bin\\Shaders\\DefaultShader.fs");
@@ -84,7 +84,7 @@ void CEngine::Initialize () {
         ecs::Entity cube = m_encosys.Create();
         SComponentTransform& transformComponent = cube.AddComponent<SComponentTransform>();
         transformComponent.Position() = cubePositions[i];
-        transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
+        transformComponent.SetForward(math::Vec3(0.f, 0.f, -1.f), math::Vec3(0.f, 1.f, 0.f));
         SComponentVelocity& velocityComponent = cube.AddComponent<SComponentVelocity>();
         SComponentRender& renderComponent = cube.AddComponent<SComponentRender>();
         renderComponent.m_shader = shaderTag;
@@ -95,8 +95,8 @@ void CEngine::Initialize () {
     ecs::Entity player = m_encosys.Create();
     {
         SComponentTransform& transformComponent = player.AddComponent<SComponentTransform>();
-        transformComponent.Position() = math::Vec3f(F_0, F_0, -F_3);
-        transformComponent.SetForward(math::Vec3f(F_0, F_0, -F_1), math::Vec3f(F_0, F_1, F_0));
+        transformComponent.Position() = math::Vec3(0.f, 0.f, -3.f);
+        transformComponent.SetForward(math::Vec3(0.f, 0.f, -1.f), math::Vec3(0.f, 1.f, 0.f));
         player.AddComponent<SComponentPlayer>();
     }
     m_encosys.GetSingleton<SSingletonCamera>().m_cameraTarget = player.GetId();
@@ -106,6 +106,6 @@ void CEngine::Terminate () {
 
 }
 
-void CEngine::Update (CFixed delta) {
+void CEngine::Update (float delta) {
     m_encosys.Update(delta);
 }

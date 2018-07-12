@@ -55,15 +55,6 @@ project "Client"
     files { "Source/Client/**.h", "Source/Client/**.cpp" }
     UseRenderLib()
 
-project "Server"
-    kind "ConsoleApp"
-    language "C++"
-    location "build/"
-    targetdir "build/%{cfg.buildcfg}"
-    includedirs { "Source" }
-    links { "Core", "Encosys", "Game", "Math" }
-    files { "Source/Server/**.h", "Source/Server/**.cpp" }
-
 project "Game"
     kind "StaticLib"
     language "C++"

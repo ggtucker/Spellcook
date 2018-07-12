@@ -16,10 +16,10 @@ void CSystemCamera::Update (ecs::TimeDelta delta) {
 
     if (cameraTarget.IsValid()) {
         if (const SComponentTransform* transform = cameraTarget.ReadComponent<SComponentTransform>()) {
-            const math::Vec3f& position = transform->Position();
-            const math::Vec3f& forward = transform->Forward();
-            camera.SetPosition(math::Vec3(position.x.ToFloat(), position.y.ToFloat(), position.z.ToFloat()));
-            camera.SetForward(math::Vec3(forward.x.ToFloat(), forward.y.ToFloat(), forward.z.ToFloat()));
+            const math::Vec3& position = transform->Position();
+            const math::Vec3& forward = transform->Forward();
+            camera.SetPosition(position);
+            camera.SetForward(forward);
         }
     }
 }
